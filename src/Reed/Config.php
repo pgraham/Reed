@@ -21,74 +21,89 @@
  */
 class Reed_Config {
 
-    private static $_config;
+  private static $_config;
 
-    public static function getWebSiteRoot() {
-        return self::_ensureConfig()->webSiteRoot();
+  public static function getWebSiteRoot() {
+    return self::_ensureConfig()->webSiteRoot();
+  }
+
+  public static function getFileSystemRoot() {
+    return self::_ensureConfig()->fileSystemRoot();
+  }
+
+  public static function getWebWritableDir() {
+    return self::_ensureConfig()->webWritableDir();
+  }
+
+  public static function getSessionTtl() {
+    return self::_ensureConfig()->sessionTtl();
+  }
+
+  public static function setConfig(Reed_Config $config) {
+    self::$_config = $config;
+  }
+
+  public static function get() {
+    return self::$_config;
+  }
+
+  public static function isDebug() {
+    return self::_ensureConfig()->debug();
+  }
+
+  private static function _ensureConfig() {
+    if (self::$_config === null) {
+      self::setConfig(new Reed_Config());
     }
+    return self::$_config;
+  }
 
-    public static function getFileSystemRoot() {
-        return self::_ensureConfig()->fileSystemRoot();
-    }
+  /*
+   * =========================================================================
+   * Instance
+   * =========================================================================
+   */
 
-    public static function getWebWritableDir() {
-        return self::_ensureConfig()->webWritableDir();
-    }
+  /**
+   * Getter for wether or not Debug mode is turned on. Default false.
+   */
+  protected function debug() {
+    return false;
+  }
 
-    public static function getSessionTtl() {
-        return self::_ensureConfig()->sessionTtl();
-    }
 
-    public static function setConfig(Reed_Config $config) {
-        self::$_config = $config;
-    }
+  /**
+   * Getter for the file system path to the root of the web site.  Default
+   * assumes that the current config instance is in desired directory.
+   */
+  protected function fileSystemRoot() {
+    $class = new ReflectionClass($this);
+    return dirname($class->getFileName());
+  }
 
-    public static function get() {
-        return self::$_config;
-    }
+  /**
+   * Getter for the site's session TTL in seconds.  This is used by Reed's
+   * Auth functionality.
+   */
+  protected function sessionTtl() {
+    return 1209600; // 60 * 60 * 24 * 14 -- 14 days in seconds
+  }
 
-    private static function _ensureConfig() {
-        if (self::$_config === null) {
-            self::setConfig(new Reed_Config());
-        }
-        return self::$_config;
-    }
+  /**
+   * Getter for the web path to the root of the site relative to the site's
+   * domain.  Default '/'.  This is useful for websites that live in a userdir.
+   * E.g. if the site lives in www.example.com/~foo/bar the this method should
+   * return '/~foo/bar/'.
+   */
+  protected function webSiteRoot() {
+    return '/';
+  }
 
-    /*
-     * =========================================================================
-     * Instance
-     * =========================================================================
-     */
-
-    /**
-     * Getter for the web path to the root of the site relative to the site's
-     * domain.  Default '/'.
-     */
-    protected function webSiteRoot() {
-        return '/';
-    }
-
-    /**
-     * Getter for the file system path to the root of the web site.  Default
-     * assumes that the current config instance is in desired directory.
-     */
-    protected function fileSystemRoot() {
-        $class = new ReflectionClass(self::_ensureConfig());
-        return dirname($class->getFileName());
-    }
-
-    /**
-     * Getter for the site's web accessible directory that is writeable by the
-     * web server.  This is a file system path.
-     */
-    protected function webWritableDir() {
-        return $this->fileSystemRoot().'/usr';
-    }
-
-    /**
-     * Getter for the site's session TTL in seconds.
-     */
-    protected function sessionTtl() {
-        return 1209600; // 60 * 60 * 24 * 14 -- 14 days in seconds
-    }
+  /**
+   * Getter for the site's web accessible directory that is writeable by the
+   * web server.  This is a file system path.
+   */
+  protected function webWritableDir() {
+    return $this->fileSystemRoot().'/usr';
+  }
 }
