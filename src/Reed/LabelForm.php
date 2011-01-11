@@ -44,7 +44,7 @@ class Reed_LabelForm extends Oboe_ElementComposite implements Oboe_Item_Body {
         $this->_cnt = 0;
     }
 
-    public function add($lbl, Oboe_Item_Form $input) {
+    public function addFormItem($lbl, Oboe_Item_Form $input) {
         $this->_tbl->addCell($this->_cnt, $lbl);
         $this->_tbl->addCell($this->_cnt++, new Reed_Form_AjaxInput($input));
     }
