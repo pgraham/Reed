@@ -1,4 +1,5 @@
 <?php
+namespace Reed;
 /**
  * =============================================================================
  * Copyright (c) 2010, Philip Graham
@@ -14,12 +15,13 @@
  * @package Reed
  */
 /**
- * This class encapsulates Reed's configuration settings.
+ * This class encapsulates configuration settings that are common to different
+ * components of a web framework
  *
- * @author Philip Graham <philip@lightbox.org>
+ * @author Philip Graham <philip@zeptech.ca>
  * @package Reed
  */
-class Reed_Config {
+class Config {
 
   private static $_config;
 
@@ -27,8 +29,8 @@ class Reed_Config {
     return self::_ensureConfig()->webSiteRoot();
   }
 
-  public static function getFileSystemRoot() {
-    return self::_ensureConfig()->fileSystemRoot();
+  public static function getDocumentRoot() {
+    return self::_ensureConfig()->documentRoot();
   }
 
   public static function getWebWritableDir() {
@@ -39,7 +41,7 @@ class Reed_Config {
     return self::_ensureConfig()->sessionTtl();
   }
 
-  public static function setConfig(Reed_Config $config) {
+  public static function setConfig(Config $config) {
     self::$_config = $config;
   }
 
@@ -48,12 +50,12 @@ class Reed_Config {
   }
 
   public static function isDebug() {
-    return self::_ensureConfig()->debug();
+    return defined('DEBUG') && DEBUG === true;
   }
 
   private static function _ensureConfig() {
     if (self::$_config === null) {
-      self::setConfig(new Reed_Config());
+      self::setConfig(new Config());
     }
     return self::$_config;
   }
@@ -65,20 +67,20 @@ class Reed_Config {
    */
 
   /**
-   * Getter for wether or not Debug mode is turned on. Default false.
-   */
-  protected function debug() {
-    return false;
-  }
-
-
-  /**
    * Getter for the file system path to the root of the web site.  Default
    * assumes that the current config instance is in desired directory.
+   *
+   * A common setup is to keep this file one directory about the web accessible
+   * root and to keep web accessible files in a folder called public_html.  In
+   * this case this method should be overridden to return:
+   *   __DIR__ . '/public_html'
+   *
+   * This method is provided as a more reliable of detecting the document root
+   * than $_SERVER['DOCUMENT_ROOT'] which will not be set when running from the
+   * command line, such as during unit tests.
    */
-  protected function fileSystemRoot() {
-    $class = new ReflectionClass($this);
-    return dirname($class->getFileName());
+  protected function documentRoot() {
+    return __DIR__;
   }
 
   /**
@@ -104,6 +106,6 @@ class Reed_Config {
    * web server.  This is a file system path.
    */
   protected function webWritableDir() {
-    return $this->fileSystemRoot().'/usr';
+    return $this->documentRoot().'/gen';
   }
 }
