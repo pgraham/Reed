@@ -13,7 +13,11 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  * @package Reed_Test
  */
-require_once dirname(__FILE__).'/../test-common.php';
+namespace ReedTest;
+
+use \PHPUnit_Framework_TestSuite as TestSuite;
+
+require_once __DIR__ . '/test-common.php';
 
 /**
  * This class builds the complete test suite for Reed.
@@ -21,12 +25,12 @@ require_once dirname(__FILE__).'/../test-common.php';
  * @author Philip Graham <philip@lightbox.org>
  * @package Reed_Test
  */
-class Reed_AllTests {
+class AllTests {
 
     public static function suite() {
-        $suite = new PHPUnit_Framework_TestSuite('Reed Test Suite');
+        $suite = new TestSuite('Reed Test Suite');
 
-        $suite->addTestSuite('Reed_OboePageIntegrationTest');
+        $suite->addTestSuite('ReedTest\Util\ReflectionHelperTest');
 
         return $suite;
     }
