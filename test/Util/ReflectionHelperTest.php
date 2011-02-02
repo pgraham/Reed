@@ -209,4 +209,94 @@ EOT;
     $this->assertFalse($annoVal['bun'], $msg);
     $this->assertEquals('stove', $annoVal['cooking_method'], $msg);
   }
+
+  /**
+   * Tests that annotation values that are enclosed in braces are parsed as an
+   * array of values.
+   */
+  public function testArrayValue() {
+    $comment = <<<'EOT'
+/**
+ * This is a comment to test that array value are parsed properly.
+ *
+ * @HasArray(array = { one, two, three })
+ * @HasTwoArrays(array1 = { four, five, six }, array2 = { seven, eight, nine })
+ * @HasThreeArrays(array1 = { ten, eleven, twelve }, array2 = { thirteen, fourteen, fifteen }, array3 = { sixteen, seventeen, eighteen })
+ */
+EOT;
+
+    $annotations = ReflectionHelper::getAnnotations($comment);
+    $msg = print_r($annotations, true);
+
+    $this->assertInternalType('array', $annotations, $msg);
+    $this->assertArrayHasKey('hasarray', $annotations, $msg);
+    $this->assertArrayHasKey('hastwoarrays', $annotations, $msg);
+    $this->assertArrayHasKey('hasthreearrays', $annotations, $msg);
+
+    $hasArray = $annotations['hasarray'];
+    $this->assertInternalType('array', $hasArray, $msg);
+    $this->assertArrayHasKey('array', $hasArray, $msg);
+    $this->assertInternalType('array', $hasArray['array'], $msg);
+    $this->assertContains('one', $hasArray['array'], $msg);
+    $this->assertContains('two', $hasArray['array'], $msg);
+    $this->assertContains('three', $hasArray['array'], $msg);
+
+    $hasTwoArrays = $annotations['hastwoarrays'];
+    $this->assertInternalType('array', $hasTwoArrays, $msg);
+    $this->assertArrayHasKey('array1', $hasTwoArrays, $msg);
+    $this->assertArrayHasKey('array2', $hasTwoArrays, $msg);
+    $this->assertInternalType('array', $hasTwoArrays['array1'], $msg);
+    $this->assertInternalType('array', $hasTwoArrays['array2'], $msg);
+    $this->assertContains('four', $hasTwoArrays['array1'], $msg);
+    $this->assertContains('five', $hasTwoArrays['array1'], $msg);
+    $this->assertContains('six', $hasTwoArrays['array1'], $msg);
+    $this->assertContains('seven', $hasTwoArrays['array2'], $msg);
+    $this->assertContains('eight', $hasTwoArrays['array2'], $msg);
+    $this->assertContains('nine', $hasTwoArrays['array2'], $msg);
+
+    $hasThreeArrays = $annotations['hasthreearrays'];
+    $this->assertInternalType('array', $hasThreeArrays, $msg);
+    $this->assertArrayHasKey('array1', $hasThreeArrays, $msg);
+    $this->assertArrayHasKey('array2', $hasThreeArrays, $msg);
+    $this->assertArrayHasKey('array3', $hasThreeArrays, $msg);
+    $this->assertInternalType('array', $hasThreeArrays['array1'], $msg);
+    $this->assertInternalType('array', $hasThreeArrays['array2'], $msg);
+    $this->assertInternalType('array', $hasThreeArrays['array3'], $msg);
+    $this->assertContains('ten', $hasThreeArrays['array1'], $msg);
+    $this->assertContains('eleven', $hasThreeArrays['array1'], $msg);
+    $this->assertContains('twelve', $hasThreeArrays['array1'], $msg);
+    $this->assertContains('thirteen', $hasThreeArrays['array2'], $msg);
+    $this->assertContains('fourteen', $hasThreeArrays['array2'], $msg);
+    $this->assertContains('fifteen', $hasThreeArrays['array2'], $msg);
+    $this->assertContains('sixteen', $hasThreeArrays['array3'], $msg);
+    $this->assertContains('seventeen', $hasThreeArrays['array3'], $msg);
+    $this->assertContains('eighteen', $hasThreeArrays['array3'], $msg);
+
+  }
+
+  /**
+   * Test that values defined inside of quotes are parsed properly.
+   */
+  public function testQuotedValue() {
+    $expected = "This is a description, contained in quotes, that has commas";
+    $comment = <<<EOT
+/**
+ * This is a comment that contains a quoted value.
+ *
+ * @Description(value = "$expected")
+ */
+EOT;
+
+    $annotations = ReflectionHelper::getAnnotations($comment);
+    $msg = print_r($annotations, true);
+
+    $this->assertInternalType('array', $annotations, $msg);
+    $this->assertArrayHasKey('description', $annotations, $msg);
+
+    $description = $annotations['description'];
+    $this->assertInternalType('array', $description, $msg);
+    $this->assertArrayHasKey('value', $description, $msg);
+
+    $this->assertEquals($expected, $description['value'], $msg);
+  }
 }
