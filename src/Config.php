@@ -1,5 +1,4 @@
 <?php
-namespace Reed;
 /**
  * =============================================================================
  * Copyright (c) 2010, Philip Graham
@@ -12,14 +11,16 @@ namespace Reed;
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package Reed
+ * @package reed
  */
+namespace reed;
+
 /**
  * This class encapsulates configuration settings that are common to different
  * components of a web framework
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package Reed
+ * @package reed
  */
 class Config {
 

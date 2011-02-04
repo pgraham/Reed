@@ -11,9 +11,9 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package Reed_Test
+ * @package reed/test
  */
-namespace ReedTest;
+namespace reed\test;
 
 use \PHPUnit_Framework_TestSuite as TestSuite;
 
@@ -23,15 +23,15 @@ require_once __DIR__ . '/test-common.php';
  * This class builds the complete test suite for Reed.
  *
  * @author Philip Graham <philip@lightbox.org>
- * @package Reed_Test
+ * @package reed/test
  */
 class AllTests {
 
-    public static function suite() {
-        $suite = new TestSuite('Reed Test Suite');
+  public static function suite() {
+    $suite = new TestSuite('Reed Test Suite');
 
-        $suite->addTestSuite('ReedTest\Util\ReflectionHelperTest');
+    $suite->addTestSuite('reed\test\util\ReflectionHelperTest');
 
-        return $suite;
-    }
+    return $suite;
+  }
 }

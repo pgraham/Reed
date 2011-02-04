@@ -13,11 +13,11 @@
  * This file sets up the environment for running tests.
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package ReedTest
+ * @package reed/test/util
  */
-namespace ReedTest\Util;
+namespace reed\test\util;
 
-use \Reed\Util\ReflectionHelper;
+use \reed\util\ReflectionHelper;
 
 use \PHPUnit_Framework_TestCase as TestCase;
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/../test-common.php';
  * This class tests the Reed\Util\ReflectionHelper class.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package ReedTest/Util
+ * @package reed/test/util
  */
 class ReflectionHelperTest extends TestCase {
 

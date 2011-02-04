@@ -1,5 +1,4 @@
 <?php
-namespace Reed;
 /**
  * =============================================================================
  * Copyright (c) 2010, Philip Graham
@@ -12,37 +11,32 @@ namespace Reed;
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package Reed
+ * @package reed
  */
+namespace reed;
+
 /**
- * Autoloader for Reed_* classes.
+ * Autoloader for Reed classes.
  *
  * @author Philip Graham <philip@lightbox.org>
- * @package Reed
+ * @package reed
  */
 class Autoloader {
 
-  /* This is the base path where the Reed_* class files are found. */
+  /* This is the base path where the Reed class files are found. */
   public static $basePath = __DIR__;
 
   /**
-   * Autoload function for Reed_* class files.
+   * Autoload function for Reed class files.
    *
    * @param string - the name of the class to load
    */
   public static function loadClass($className) {
-    if (strpos($className, 'Reed_') === 0) {
-      $logicalPath = str_replace('_', '/', $className);
-      
-    } else if (strpos($className, 'Reed\\') === 0) {
-      $pathComponents = explode('\\', $className);
-      array_shift($pathComponents);
-      $logicalPath = implode('/', $pathComponents);
-
-    } else {
+    if (substr($className, 0, 5) != 'reed\\') {
       return;
     }
 
+    $logicalPath = str_replace('\\', '/', substr($className, 5));
     $fullPath = self::$basePath . '/' . $logicalPath . '.php';
     if (file_exists($fullPath)) {
       require_once $fullPath;
@@ -51,4 +45,4 @@ class Autoloader {
 }
 
 # Static initializer
-spl_autoload_register(array('Reed\Autoloader', 'loadClass'));
+spl_autoload_register(array('reed\Autoloader', 'loadClass'));

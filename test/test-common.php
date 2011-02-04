@@ -13,7 +13,7 @@
  * This file sets up the environment for running tests.
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package ReedTest
+ * @package reed/test
  */
 
 

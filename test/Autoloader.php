@@ -1,5 +1,4 @@
 <?php
-namespace ReedTest;
 /**
  * =============================================================================
  * Copyright (c) 2010, Philip Graham
@@ -12,14 +11,15 @@ namespace ReedTest;
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package Reed_Test
+ * @package reed/test
  */
+namespace reed\test;
 
 /**
  * Autoloader for reed's test cases.
  *
  * @author Philip Graham <philip@lightbox.org>
- * @packacge Reed_Test
+ * @packacge reed/test
  */
 class Autoloader {
 
@@ -32,15 +32,15 @@ class Autoloader {
    * @param string - the name of teh class to load
    */
   public static function loadClass($className) {
-    if (substr($className, 0, 9) != 'ReedTest\\') {
+    if (substr($className, 0, 10) != 'reed\\test\\') {
       return;
     }
 
-    $logicalPath = str_replace('\\', '/', substr($className, 9));
-    $fullPath = self::$basePath.'/'.$logicalPath.'.php';
+    $logicalPath = str_replace('\\', '/', substr($className, 10));
+    $fullPath = self::$basePath . '/' . $logicalPath . '.php';
     if (file_exists($fullPath)) {
       require_once $fullPath;
     }
   }
 }
-spl_autoload_register(array('ReedTest\Autoloader', 'loadClass'));
+spl_autoload_register(array('reed\test\Autoloader', 'loadClass'));
