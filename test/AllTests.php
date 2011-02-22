@@ -31,6 +31,7 @@ class AllTests {
     $suite = new TestSuite('Reed Test Suite');
 
     $suite->addTestSuite('reed\test\util\ReflectionHelperTest');
+    $suite->addTestSuite('reed\test\generator\CodeTemplateLoaderTest');
 
     return $suite;
   }
