@@ -42,9 +42,9 @@ class CodeTemplateLoaderTest extends TestCase {
   public function testLoadBasic() {
     $template  = $this->_loader->load('simple', Array
       (
-        '${sub1}' => 'val1',
-        '${sub2}' => 'val2',
-        '${sub3}' => 'val3'
+        'sub1' => 'val1',
+        'sub2' => 'val2',
+        'sub3' => 'val3'
       )
     );
 
@@ -54,6 +54,36 @@ class CodeTemplateLoaderTest extends TestCase {
       . "The following line contains a value on its own\n"
       . "val1\n";
       
+    $this->assertEquals($expected, $template);
+  }
+
+  public function testLoadJoin() {
+    $template = $this->_loader->load('join', Array
+      (
+        'joined' => Array('val1', 'val2', 'val3')
+      )
+    );
+
+    $expected = "This is a sample template that contains a join substitution.\n"
+      . "This line contains a join with ',' as the glue: val1,val2,val3\n"
+      . "This line contains a join with ' ' as the glue: val1 val2 val3\n";
+
+    $this->assertEquals($expected, $template);
+  }
+
+  public function testLoadEach() {
+    $template = $this->_loader->load('each', Array
+      (
+        'eached' => Array('I am line #1', 'I am line #2', 'I am line #3')
+      )
+    );
+
+    $expected = "This is a sample template that contains an each substitution."
+      . "\n\n"
+      . "  I am line #1\n"
+      . "  I am line #2\n"
+      . "  I am line #3\n";
+
     $this->assertEquals($expected, $template);
   }
 }
