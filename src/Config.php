@@ -71,7 +71,7 @@ class Config {
    * Getter for the file system path to the root of the web site.  Default
    * assumes that the current config instance is in desired directory.
    *
-   * A common setup is to keep this file one directory about the web accessible
+   * A common setup is to keep this file one directory above the web accessible
    * root and to keep web accessible files in a folder called public_html.  In
    * this case this method should be overridden to return:
    *   __DIR__ . '/public_html'
