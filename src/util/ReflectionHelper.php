@@ -28,7 +28,13 @@ class ReflectionHelper {
 
   /**
    * Parse any annotations from the given doc comment and return them in an
-   * array structure
+   * array structure.  The annotations in the returned array are indexed by
+   * their lowercased name.  Parameters with a value defined as a comma
+   * separated list contained in braces will be return as arrays.  Parameter
+   * values defined in quotes will have the quotes stripped and the inner value
+   * parsed for boolean and numeric values.  If not a boolean or numeric value,
+   * will be return as a string.  All other parameter values will be returned as
+   * either a boolean, number or string as appropriate.
    *
    * @param string $docComment The comment to parse.
    * @return array Array containing the defined annotations.
