@@ -25,10 +25,21 @@ use \reed\Exception;
  */
 class CodeTemplateLoader {
 
-  const JOIN_REGEX     = '/\$\{join:([^:]+):([^\}]+)\}/';
   const EACH_REGEX     = '/^([\t ]*)\$\{each:([^\}]+)\}/m';
-  const TEMPLATE_REGEX = '/^([\t ]*)\$\{template:([^\}]+)\}/m';
+
+  const ELSE_REGEX     = '/^([\t ]*)\$\{else\}$/';
+
+  const ELSEIF_REGEX   = '/^([\t ]*)\$\{elseif:([^\}]+)\}$/';
+
+  const FI_REGEX       = '/^([\t ]*)\$\{fi\}$/';
+
+  const IF_REGEX       = '/^([\t ]*)\$\{if:([^\}]+)\}$/';
+
+  const JOIN_REGEX     = '/\$\{join:([^:]+):([^\}]+)\}/';
+
   const TAG_REGEX      = '/\$\{([^\}]+)}/';
+
+  const TEMPLATE_REGEX = '/^([\t ]*)\$\{template:([^\}]+)\}/m';
 
   /* Cache of instances keyed by base path. */
   private static $_cache = Array();
@@ -44,9 +55,12 @@ class CodeTemplateLoader {
    * @param string $dir The base directory where template are to be loaded from.
    * @return TemplateLoader
    */
-  public static function get($dir) {
+  public static function get($dir, $extension = null) {
     if (!isset(self::$_cache[$dir])) {
-      self::$_cache[$dir] = new CodeTemplateLoader($dir);
+      // TODO - Using the extension in this way is likely going to be
+      //        problematic with regards to caching, come up with something
+      //        better
+      self::$_cache[$dir] = new CodeTemplateLoader($dir, $extension);
     }
     return self::$_cache[$dir];
   }
@@ -68,6 +82,9 @@ class CodeTemplateLoader {
    * specified by the given path.
    *
    * @param string $basePath Path to the directory where template are located.
+   * @param string $extension Extension of the files that contain the templates
+   *   loaded by this class.  Optional, if null or not provided then .template
+   *   is used.
    */
   public function __construct($basePath) {
     $this->_basePath = $basePath;
@@ -82,7 +99,8 @@ class CodeTemplateLoader {
    * be expected to not have the ${} characters of the substitution tag.  For
    * now either syntax is accepted.
    *
-   * @param string $templateName
+   * @param string $templateName If the template name doesn't include an
+   *   extension, an extension of .template will be added to the name.
    * @param array $templateValues
    */
   public function load($templateName, Array $templateValues) {
@@ -96,17 +114,31 @@ class CodeTemplateLoader {
 
   /* Load the contents of the template file with the given name */
   private function _load($templateName) {
-    $templatePath = $this->_basePath . "/$templateName.template";
+    if (strpos($templateName, '.') === false) {
+      $templateName = $templateName . '.template';
+    }
+
+    $templatePath = $this->_basePath . '/' . $templateName;
     if (!file_exists($templatePath)) {
       throw new Exception(
         "Unable to load template: $templatePath does not exist");
     }
     $file = file_get_contents($templatePath);
-    $template = new CodeTemplate($file);
+
+    $template = new CodeTemplate();
+    $parsed = $this->_parse($file, $template);
+    $template->setCode($parsed); 
+
+    return $template;
+  }
+
+  private function _parse($file, $template) {
+
+    $parsedIfs = $this->_parseIfs($file, $template);
 
     // Get joins
     $joins = Array();
-    preg_match_all(self::JOIN_REGEX, $file, $joins, PREG_SET_ORDER);
+    preg_match_all(self::JOIN_REGEX, $parsedIfs, $joins, PREG_SET_ORDER);
     foreach ($joins AS $join) {
       $name = $join[1];
       $glue = $join[2];
@@ -115,7 +147,7 @@ class CodeTemplateLoader {
 
     // Get templates
     $subTemplates = Array();
-    preg_match_all(self::TEMPLATE_REGEX, $file, $templates, PREG_SET_ORDER);
+    preg_match_all(self::TEMPLATE_REGEX, $parsedIfs, $templates, PREG_SET_ORDER);
     foreach ($subTemplates AS $subTemplate) {
       $indent = $subTemplate[1];
       $name   = $subTemplate[2];
@@ -124,7 +156,7 @@ class CodeTemplateLoader {
 
     // Get eaches
     $eaches = Array();
-    preg_match_all(self::EACH_REGEX, $file, $eaches, PREG_SET_ORDER);
+    preg_match_all(self::EACH_REGEX, $parsedIfs, $eaches, PREG_SET_ORDER);
     foreach ($eaches AS $each) {
       $indent = $each[1];
       $name   = $each[2];
@@ -132,7 +164,7 @@ class CodeTemplateLoader {
     }
 
     $tags = Array();
-    preg_match_all(self::TAG_REGEX, $file, $tags, PREG_SET_ORDER);
+    preg_match_all(self::TAG_REGEX, $parsedIfs, $tags, PREG_SET_ORDER);
     foreach ($tags AS $tag) {
       if (substr($tag[1], 0, 5) == 'join:') {
         continue;
@@ -149,6 +181,66 @@ class CodeTemplateLoader {
       $template->addTag($tag[1]);
     }
 
-    return $template;
+    return $parsedIfs;
+  }
+
+  private function _parseIfs($file, $template) {
+    $lines = explode("\n", $file);
+    $parsedLines = Array();
+
+    $curBlock = null;
+    $curClause = null;
+    $curCode = Array();
+    foreach ($lines AS $line) {
+      $ifParams = Array();
+
+      if ($curBlock === null) {
+
+        if (preg_match(self::IF_REGEX, $line, $ifParams)) {
+          $ifNum = ++$this->_numIfs;
+          $indent = $ifParams[1];
+          $expression = $ifParams[2];
+
+          $curBlock = new IfBlock($ifNum, $indent);
+          $template->addIf($curBlock);
+
+          $curClause = new IfClause($expression);
+          $curBlock->setIf($curClause);
+
+          $parsedLines[] = "$indent\${if{$ifNum}}";
+        } else {
+          $parsedLines[] = $line;
+        }
+
+      } else if (preg_match(self::ELSEIF_REGEX, $line, $ifParams)) {
+        $code = $this->_parse(implode("\n", $curCode), $template);
+        $curClause->setCode($code);
+
+        $curClause = new ElseIfClause($ifParams[2]);
+        $curBlock->addElseIf($curClause);
+        $curCode = Array();
+
+      } else if (preg_match(self::ELSE_REGEX, $line, $ifParams)) {
+        $code = $this->_parse(implode("\n", $curCode), $template);
+        $curClause->setCode($code);
+
+        $curClause = new ElseClause();
+        $curBlock->setElse($curClause);
+        $curCode = Array();
+
+      } else if (preg_match(self::FI_REGEX, $line, $ifParams)) {
+        $code = $this->_parse(implode("\n", $curCode), $template);
+        $curClause->setCode($code);
+
+        $curBlock = null;
+        $curClause = null;
+        $curCode = Array();
+
+      } else {
+        $curCode[] = $line;
+      }
+    }
+
+    return implode("\n", $parsedLines);
   }
 }

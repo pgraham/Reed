@@ -86,4 +86,101 @@ class CodeTemplateLoaderTest extends TestCase {
 
     $this->assertEquals($expected, $template);
   }
+
+  public function testLoadBooleanIf() {
+    $template = $this->_loader->load('boolean_if', Array
+      (
+        'boolval' => true
+      )
+    );
+
+    $expected = "This is a sample template that contains a simple if"
+      . " substitution.\n"
+      . "If a value named boolval is present and equal to true then there\n"
+      . "will be a message beneath this explanation.";
+
+    $condMsg = "\n\n  I was included conditionally!";
+
+    $this->assertEquals($expected.$condMsg, trim($template));
+
+    $template = $this->_loader->load('boolean_if', Array
+      (
+        'boolval' => false
+      )
+    );
+
+    $this->assertEquals($expected, trim($template));
+  }
+
+  public function testLoadIf() {
+    $template = $this->_loader->load('if', Array
+      (
+        'value' => 'goodone'
+      )
+    );
+
+    $expected = "This is a sample template that contains a simple if"
+      . " substitution.\n"
+      . "If a value named value is present and equal to 'goodone' then there\n"
+      . "will be a message beneath this explanation.";
+    $condMsg = "\n\n  I was included conditionally!";
+
+    $this->assertEquals($expected.$condMsg, trim($template));
+
+    $template = $this->_loader->load('if', Array
+      (
+        'value' => 'badone'
+      )
+    );
+
+    $this->assertEquals($expected, trim($template));
+  }
+
+  public function testLoadIfElse() {
+    $values = Array();
+
+    $expected = "This is a sample template that contains a simple if else"
+      . " substitution.\n"
+      . "If a value named value is present and equal to true then there\n"
+      . "will be a fun message. Otherwise there will be a serious message."
+      . "\n\n";
+
+    $ifMsg = '  OMG if statements fo lyfe!';
+    $elseMsg = '  This is the else condition';
+
+    $values['goodone'] = true;
+    $template = $this->_loader->load('if_else', $values);
+    $this->assertEquals($expected . $ifMsg, trim($template));
+
+    $values['goodone'] = 'giberrish';
+    $template = $this->_loader->load('if_else', $values);
+    $this->assertEquals($expected . $elseMsg, trim($template));
+  }
+
+  public function testLoadIfElseIfElse() {
+    $values = Array();
+
+    $expected = "This is a sample template that contains a simple if, elseif,"
+      . " else substitution.\n"
+      . "If a value named goodone is present and equal to true then there\n"
+      . "will be a fun message. If the value is equal to 'goodone' then there\n"
+      . "will be a weird message. Otherwise there will be a serious message."
+      . "\n\n";
+
+    $ifMsg = '  OMG if statements fo lyfe!';
+    $elseifMsg = '  OY, where my BBQ at VANIER WHAAAAAAAAAAT!!!!!!!!!!';
+    $elseMsg = '  This is the else condition';
+
+    $values['goodone'] = true;
+    $template = $this->_loader->load('if_elseif_else', $values);
+    $this->assertEquals($expected . $ifMsg, trim($template));
+
+    $values['goodone'] = 'goodone';
+    $template = $this->_loader->load('if_elseif_else', $values);
+    $this->assertEquals($expected . $elseifMsg, trim($template));
+
+    $values['goodone'] = 'giberrish';
+    $template = $this->_loader->load('if_elseif_else', $values);
+    $this->assertEquals($expected . $elseMsg, trim($template));
+  }
 }

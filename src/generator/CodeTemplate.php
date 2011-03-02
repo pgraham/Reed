@@ -26,6 +26,9 @@ class CodeTemplate {
   /* The each substitution tags */
   private $_eaches = Array();
 
+  /* The template's if blocks */
+  private $_ifs = Array();
+
   /* The join substitution tags */
   private $_joins = Array();
 
@@ -35,17 +38,18 @@ class CodeTemplate {
   /* The simple substitution tags */
   private $_tags = Array();
 
-  /* The complete template text, into which values are substituted */
-  private $_template;
+  /*
+   * Parsed code for the template.  The parsing process will replace if-blocks
+   * with a single substitution tag.
+   */
+  private $_code;
 
   /**
    * Create a new code template for the given text.
    *
    * @param string $template
    */
-  public function __construct($template) {
-    $this->_template = $template;
-  }
+  public function __construct() {}
 
   /**
    * Add an each to the template.
@@ -62,6 +66,15 @@ class CodeTemplate {
   }
 
   /**
+   * Add an if block to the template.
+   *
+   * @param IfBlock $ifBlock Encapsulated if block.
+   */
+  public function addIf(IfBlock $ifBlock) {
+    $this->_ifs[] = $ifBlock;
+  }
+
+  /**
    * Add a join to the template.
    *
    * @param string $name The name of the value to join together before inserting
@@ -70,6 +83,8 @@ class CodeTemplate {
    *   values.
    */
   public function addJoin($name, $glue) {
+    str_replace('\\n', "\n", $glue);
+
     $this->_joins[] = Array
     (
       'name' => $name,
@@ -109,9 +124,26 @@ class CodeTemplate {
    * @return string The template with values substituted for tags.
    */
   public function forValues(Array $values) {
+    $code = $this->_code;
+
+    // Do the if replacement first since the if code may contain other
+    // substitutions
+    if (count($this->_ifs) > 0) {
+      // The if statements should have been added in an order that will
+      // make it possible to loop through the array once with nested ifs
+      // already substituted in by the time they are reached
+      foreach ($this->_ifs AS $ifBlock) {
+        $toReplace    = "\${if{$ifBlock->getId()}}";
+        $replacement = $ifBlock->forValues($values);
+
+        $code = str_replace($toReplace, $replacement, $code);
+      }
+    }
+    
+    // Determine the substitution tags and the replacement values for
+    // populating the template
     $toReplace = Array();
     $replacements = Array();
-
     foreach ($values AS $name => $value) {
       if (substr($name, 0, 2) == '${' && substr($name, -1) == '}') {
         $name = substr($name, 2, -1);
@@ -157,6 +189,15 @@ class CodeTemplate {
       }
     }
 
-    return str_replace($toReplace, $replacements, $this->_template);
+    return str_replace($toReplace, $replacements, $code);
+  }
+
+  /**
+   * Set the code for the template.
+   *
+   * @param string $code The template's code
+   */
+  public function setCode($code) {
+    $this->_code = $code;
   }
 }

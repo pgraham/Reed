@@ -2,26 +2,10 @@
 
   Planned upgrades include support for the following substitutions:
 
-    ${join:name:glue}
-    -----------------
-
-      An inline substitution tag that joins each element of the named
-      substitution value with the specified glue.
-
-    ${template:name}
-    ----------------
-
-      Load and insert the temple with the given name.  Each line of the loaded
-      template will be indented the same amount as the substitution tag.  This
-      substitution tag must appear on a line that contains no text other than
-      leading whitespace and the substitution tag.
-
-    ${each:name}
-    ------------
-      
-      Output each of the values in name on its own line.  Each line will be
-      indented the same amount as the substitution tag.  If the substituted
-      value contains multiple lines, each line in the value will also be
-      indented.  This substitution tag must appear on a line that contains no
-      text other than leading whitespace and the substitution tag.
-
+    ${if:name[expression]}...${fi:name}
+    -------------------------------
+    
+      Only output someting if the named value is a boolean true (if no
+      expression is specified) or if the given expression evaluates to true.
+      This could also be expanded to include addition if expressions and an else
+      clause.
