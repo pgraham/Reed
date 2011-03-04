@@ -23,8 +23,8 @@ namespace reed\util;
  */
 class ReflectionHelper {
 
-  private static $_annoRE = '/@(\w+)\(?(.*)\)?\n/';
-  private static $_paramRE = '/(\w+)\s*=\s*(\{[^}]*\}|"[^"]*"|[^,)]*)(?:,|\))/';
+  const ANNOTATION_REGEX = '/@(\w+)\(?(.*)\)?\n/';
+  const PARAMETER_REGEX = '/(\w+)\s*=\s*(\{[^}]*\}|"[^"]*"|[^,)]*)(?:,|\))/';
 
   /**
    * Parse any annotations from the given doc comment and return them in an
@@ -42,7 +42,7 @@ class ReflectionHelper {
   public static function getAnnotations($docComment) {
     $matches = array();
     preg_match_all(
-      self::$_annoRE,
+      self::ANNOTATION_REGEX,
       $docComment,
       $matches,
       PREG_SET_ORDER
@@ -51,12 +51,22 @@ class ReflectionHelper {
     $annotations = array();
     foreach ($matches AS $anno) {
       $annoName = strtolower($anno[1]);
-      $annotations[$annoName] = array();
 
       $params = array();
-      preg_match_all(self::$_paramRE, $anno[2], $params, PREG_SET_ORDER);
-      foreach ($params AS $param) {
-        $annotations[$annoName][$param[1]] = self::_parseValue($param[2]);
+      $hasParams = preg_match_all(self::PARAMETER_REGEX, $anno[2], $params,
+        PREG_SET_ORDER);
+      if ($hasParams) {
+        $annotations[$annoName] = array();
+        foreach ($params AS $param) {
+          $annotations[$annoName][$param[1]] = self::_parseValue($param[2]);
+        }
+      } else {
+        $val = trim($anno[2]);
+        if ($val == '') {
+          $annotations[$annoName] = true;
+        } else {
+          $annotations[$annoName] = trim($anno[2]);
+        }
       }
     }
     return $annotations;

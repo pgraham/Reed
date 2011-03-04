@@ -47,7 +47,30 @@ EOT;
 
     $this->assertInternalType('array', $annotations, $msg);
     $this->assertArrayHasKey('entity', $annotations, $msg);
-    $this->assertInternalType('array', $annotations['entity'], $msg);
+    $this->assertInternalType('boolean', $annotations['entity'], $msg);
+    $this->assertEquals(true, $annotations['entity'], $msg);
+  }
+
+  /**
+   * Tests that a doc comment that contains a single annotation with only
+   * a single value defined without a name works correctly.
+   */
+  public function testSingleValueAnnotation() {
+    $comment = <<<'EOT'
+/**
+ * This is a comment that contains a single annotation with a single value
+ *
+ * @Entity is awesome!
+ */
+EOT;
+    
+    $annotations = ReflectionHelper::getAnnotations($comment);
+    $msg = print_r($annotations, true);
+
+    $this->assertInternalType('array', $annotations, $msg);
+    $this->assertArrayHasKey('entity', $annotations, $msg);
+    $this->assertInternalType('string', $annotations['entity'], $msg);
+    $this->assertEquals('is awesome!', $annotations['entity'], $msg);
   }
 
   /**
