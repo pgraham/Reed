@@ -32,8 +32,8 @@ class CodeTemplate {
   /* The join substitution tags */
   private $_joins = Array();
 
-  /* The sub template tags */
-  private $_subTemplates = Array();
+  /* The JSON substitution tags */
+  private $_jsons = Array();
 
   /* The simple substitution tags */
   private $_tags = Array();
@@ -54,15 +54,10 @@ class CodeTemplate {
   /**
    * Add an each to the template.
    *
-   * @param string $name The name of the value to substitute into the template.
-   * @param string $indent The indentation for each line of the each.
+   * @param EachBlock $each
    */
-  public function addEach($name, $indent) {
-    $this->_eaches[] = Array
-    (
-      'name'   => $name,
-      'indent' => $indent
-    );
+  public function addEach($each) {
+    $this->_eaches[] = $each;
   }
 
   /**
@@ -83,7 +78,7 @@ class CodeTemplate {
    *   values.
    */
   public function addJoin($name, $glue) {
-    str_replace('\\n', "\n", $glue);
+    $glue = str_replace('\\n', "\n", $glue);
 
     $this->_joins[] = Array
     (
@@ -93,17 +88,13 @@ class CodeTemplate {
   }
 
   /**
-   * Add a sub-template to the template.
+   * Add a json substitution to the template.
    *
-   * @param string $name The name of the value to substitute into the template.
-   * @param string $indent The indentation for each line of the template.
+   * @param string $name The name of the value to encode as JSON before
+   *   inserting into the template.
    */
-  public function addSubTemplate($name, $indent) {
-    $this->_subTemplate = Array
-    (
-      'name'   => $name,
-      'indent' => $indent
-    );
+  public function addJson($name) {
+    $this->_jsons[] = $name;
   }
 
   /**
@@ -139,6 +130,15 @@ class CodeTemplate {
         $code = str_replace($toReplace, $replacement, $code);
       }
     }
+
+    if (count($this->_eaches) > 0) {
+      foreach ($this->_eaches AS $eachBlock) {
+        $toReplace = $eachBlock->getTag();
+        $replacement = $eachBlock->forValues($values);
+
+        $code = str_replace($toReplace, $replacement, $code);
+      }
+    }
     
     // Determine the substitution tags and the replacement values for
     // populating the template
@@ -154,7 +154,9 @@ class CodeTemplate {
           continue;
         }
 
-        $toReplace[] = "\${join:$name:{$join['glue']}}";
+        $tagGlue = str_replace("\n", '\\n', $join['glue']);
+
+        $toReplace[] = "\${join:$name:$tagGlue}";
         $replacements[] = implode($join['glue'],
           (is_array($value))
             ? $value
@@ -162,23 +164,17 @@ class CodeTemplate {
         );
       }
 
-      foreach ($this->_eaches AS $each) {
-        if ($each['name'] != $name) {
+      foreach ($this->_jsons AS $json) {
+        if ($json != $name) {
           continue;
         }
 
-        $eachVal = str_replace("\n", "\n" . $each['indent'], $value);
-        $toReplace[] = "\${each:$name}";
-        $replacements[] = implode("\n" . $each['indent'], $eachVal);
-      }
-
-      foreach ($this->_subTemplates AS $subTemplate) {
-        $subTemplateVal = CodeTemplateLoader::load($name)->forValues($values);
-        $subTemplateVal = str_replace("\n", "\n" . $subTemplate['indent'],
-          $subTemplateVal);
-
-        $toReplace[] = "\${template:$name}";
-        $replacements[] = $subTemplateVal;
+        $toReplace[] = "\${json:$name}";
+        $replacements[] = json_encode(
+          (is_array($value))
+            ? $value
+            : Array($value)
+        );
       }
 
       foreach ($this->_tags AS $tag) {

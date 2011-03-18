@@ -1,3 +1,5 @@
 This is a sample template that contains an each substitution.
 
-  ${each:eached}
+  ${each:eached as val}
+    ${val}
+  ${done}

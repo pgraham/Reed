@@ -25,22 +25,6 @@ use \reed\Exception;
  */
 class CodeTemplateLoader {
 
-  const EACH_REGEX     = '/^([\t ]*)\$\{each:([^\}]+)\}/m';
-
-  const ELSE_REGEX     = '/^([\t ]*)\$\{else\}$/';
-
-  const ELSEIF_REGEX   = '/^([\t ]*)\$\{elseif:([^\}]+)\}$/';
-
-  const FI_REGEX       = '/^([\t ]*)\$\{fi\}$/';
-
-  const IF_REGEX       = '/^([\t ]*)\$\{if:([^\}]+)\}$/';
-
-  const JOIN_REGEX     = '/\$\{join:([^:]+):([^\}]+)\}/';
-
-  const TAG_REGEX      = '/\$\{([^\}]+)}/';
-
-  const TEMPLATE_REGEX = '/^([\t ]*)\$\{template:([^\}]+)\}/m';
-
   /* Cache of instances keyed by base path. */
   private static $_cache = Array();
 
@@ -126,121 +110,11 @@ class CodeTemplateLoader {
     $file = file_get_contents($templatePath);
 
     $template = new CodeTemplate();
-    $parsed = $this->_parse($file, $template);
+    $parser = new CodeTemplateParser();
+
+    $parsed = $parser->parse($file, $template);
     $template->setCode($parsed); 
 
     return $template;
-  }
-
-  private function _parse($file, $template) {
-
-    $parsedIfs = $this->_parseIfs($file, $template);
-
-    // Get joins
-    $joins = Array();
-    preg_match_all(self::JOIN_REGEX, $parsedIfs, $joins, PREG_SET_ORDER);
-    foreach ($joins AS $join) {
-      $name = $join[1];
-      $glue = $join[2];
-      $template->addJoin($name, $glue);
-    }
-
-    // Get templates
-    $subTemplates = Array();
-    preg_match_all(self::TEMPLATE_REGEX, $parsedIfs, $templates, PREG_SET_ORDER);
-    foreach ($subTemplates AS $subTemplate) {
-      $indent = $subTemplate[1];
-      $name   = $subTemplate[2];
-      $template->addSubTemplate($name, $indent);
-    }
-
-    // Get eaches
-    $eaches = Array();
-    preg_match_all(self::EACH_REGEX, $parsedIfs, $eaches, PREG_SET_ORDER);
-    foreach ($eaches AS $each) {
-      $indent = $each[1];
-      $name   = $each[2];
-      $template->addEach($name, $indent);
-    }
-
-    $tags = Array();
-    preg_match_all(self::TAG_REGEX, $parsedIfs, $tags, PREG_SET_ORDER);
-    foreach ($tags AS $tag) {
-      if (substr($tag[1], 0, 5) == 'join:') {
-        continue;
-      }
-
-      if (substr($tag[1], 0, 5) == 'each:') {
-        continue;
-      }
-
-      if (substr($tag[1], 0, 9) == 'template:') {
-        continue;
-      }
-
-      $template->addTag($tag[1]);
-    }
-
-    return $parsedIfs;
-  }
-
-  private function _parseIfs($file, $template) {
-    $lines = explode("\n", $file);
-    $parsedLines = Array();
-
-    $curBlock = null;
-    $curClause = null;
-    $curCode = Array();
-    foreach ($lines AS $line) {
-      $ifParams = Array();
-
-      if ($curBlock === null) {
-
-        if (preg_match(self::IF_REGEX, $line, $ifParams)) {
-          $ifNum = ++$this->_numIfs;
-          $indent = $ifParams[1];
-          $expression = $ifParams[2];
-
-          $curBlock = new IfBlock($ifNum, $indent);
-          $template->addIf($curBlock);
-
-          $curClause = new IfClause($expression);
-          $curBlock->setIf($curClause);
-
-          $parsedLines[] = "$indent\${if{$ifNum}}";
-        } else {
-          $parsedLines[] = $line;
-        }
-
-      } else if (preg_match(self::ELSEIF_REGEX, $line, $ifParams)) {
-        $code = $this->_parse(implode("\n", $curCode), $template);
-        $curClause->setCode($code);
-
-        $curClause = new ElseIfClause($ifParams[2]);
-        $curBlock->addElseIf($curClause);
-        $curCode = Array();
-
-      } else if (preg_match(self::ELSE_REGEX, $line, $ifParams)) {
-        $code = $this->_parse(implode("\n", $curCode), $template);
-        $curClause->setCode($code);
-
-        $curClause = new ElseClause();
-        $curBlock->setElse($curClause);
-        $curCode = Array();
-
-      } else if (preg_match(self::FI_REGEX, $line, $ifParams)) {
-        $code = $this->_parse(implode("\n", $curCode), $template);
-        $curClause->setCode($code);
-
-        $curBlock = null;
-        $curClause = null;
-        $curCode = Array();
-
-      } else {
-        $curCode[] = $line;
-      }
-    }
-
-    return implode("\n", $parsedLines);
   }
 }

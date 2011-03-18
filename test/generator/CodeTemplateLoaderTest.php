@@ -48,11 +48,7 @@ class CodeTemplateLoaderTest extends TestCase {
       )
     );
 
-    $expected = "This is a sample template with simple substitutions.\n\n"
-      . "This line contains an inline substitution: val1\n"
-      . "This line contains two substitutions: val2 val3\n"
-      . "The following line contains a value on its own\n"
-      . "val1\n";
+    $expected = file_get_contents(__DIR__ . '/simple.expected');
       
     $this->assertEquals($expected, $template);
   }
@@ -64,25 +60,7 @@ class CodeTemplateLoaderTest extends TestCase {
       )
     );
 
-    $expected = "This is a sample template that contains a join substitution.\n"
-      . "This line contains a join with ',' as the glue: val1,val2,val3\n"
-      . "This line contains a join with ' ' as the glue: val1 val2 val3\n";
-
-    $this->assertEquals($expected, $template);
-  }
-
-  public function testLoadEach() {
-    $template = $this->_loader->load('each', Array
-      (
-        'eached' => Array('I am line #1', 'I am line #2', 'I am line #3')
-      )
-    );
-
-    $expected = "This is a sample template that contains an each substitution."
-      . "\n\n"
-      . "  I am line #1\n"
-      . "  I am line #2\n"
-      . "  I am line #3\n";
+    $expected = file_get_contents(__DIR__ . '/join.expected');
 
     $this->assertEquals($expected, $template);
   }
@@ -94,12 +72,9 @@ class CodeTemplateLoaderTest extends TestCase {
       )
     );
 
-    $expected = "This is a sample template that contains a simple if"
-      . " substitution.\n"
-      . "If a value named boolval is present and equal to true then there\n"
-      . "will be a message beneath this explanation.";
+    $expected = file_get_contents(__DIR__ . '/boolean_if-base.expected');
 
-    $condMsg = "\n\n  I was included conditionally!";
+    $condMsg = "\n  I was included conditionally!";
 
     $this->assertEquals($expected.$condMsg, trim($template));
 
@@ -109,7 +84,7 @@ class CodeTemplateLoaderTest extends TestCase {
       )
     );
 
-    $this->assertEquals($expected, trim($template));
+    $this->assertEquals(trim($expected), trim($template));
   }
 
   public function testLoadIf() {

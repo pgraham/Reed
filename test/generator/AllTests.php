@@ -11,16 +11,16 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/test
+ * @package reed/test/generator
  */
-namespace reed\test;
+namespace reed\test\generator;
 
 use \PHPUnit_Framework_TestSuite as TestSuite;
 
-require_once __DIR__ . '/test-common.php';
+require_once __DIR__ . '/../test-common.php';
 
 /**
- * This class builds the complete test suite for Reed.
+ * This class build the test suite for reed\generator classes.
  *
  * @author Philip Graham <philip@lightbox.org>
  * @package reed/test
@@ -28,11 +28,10 @@ require_once __DIR__ . '/test-common.php';
 class AllTests {
 
   public static function suite() {
-    $suite = new TestSuite('reed test suite');
+    $suite = new TestSuite('reed\generator test suite');
 
-    $suite->addTestSuite(generator\AllTests::suite());
-
-    $suite->addTestSuite('reed\test\util\ReflectionHelperTest');
+    $suite->addTestSuite('reed\test\generator\CodeTemplateLoaderTest');
+    $suite->addTestSuite('reed\test\generator\EachParserTest');
 
     return $suite;
   }
