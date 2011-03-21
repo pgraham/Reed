@@ -134,6 +134,15 @@ class WebSitePathInfo {
     return $this->_doc;
   }
 
+  /** 
+   * Getter for the web site's library path.
+   *
+   * @return string
+   */
+  public function getLibPath() {
+    return $this->_lib;
+  }
+
   /**
    * Getter for the web site's non-web accessible target directory.
    *
