@@ -89,10 +89,13 @@ class EachBlock extends Clause {
       $toReplace = '${'. $this->_alias . '}';
 
       $resolved = str_replace($toReplace, $val, $this->_code);
-      $eaches[] = $this->_outputCode($resolved);
+      $eaches[] = $resolved;
     }
 
-    return $this->_outputCode(implode("\n{$this->_indent}", $eaches));
+    $each = implode("\n", $eaches);
+    $indented = preg_replace('/\n/m', "\n" . $this->_indent, $each);
+
+    return $indented;
   }
 
   /**
@@ -110,6 +113,6 @@ class EachBlock extends Clause {
    * block.
    */
   private function _outputCode($code) {
-    return preg_replace('/\n\s*/m', "\n" . $this->_indent, trim($code));
+    return preg_replace('/\n/m', "\n" . $this->_indent, $code);
   }
 }

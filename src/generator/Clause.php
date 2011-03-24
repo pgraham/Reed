@@ -41,6 +41,6 @@ abstract class Clause {
    * @param string $code
    */
   public function setCode($code) {
-    $this->_code = $code;
+    $this->_code = trim($code);
   }
 }
