@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed
  */
 namespace reed;
 
@@ -19,7 +18,6 @@ namespace reed;
  * Autoloader for Reed classes.
  *
  * @author Philip Graham <philip@lightbox.org>
- * @package reed
  */
 class Autoloader {
 

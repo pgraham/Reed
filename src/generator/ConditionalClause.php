@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/generator
  */
 namespace reed\generator;
 
@@ -20,7 +19,6 @@ namespace reed\generator;
  * substitution values passed to a CodeTemplate.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/generator
  */
 abstract class ConditionalClause extends Clause {
 

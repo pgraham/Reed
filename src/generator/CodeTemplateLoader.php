@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/generator
  */
 namespace reed\generator;
 
@@ -21,7 +20,6 @@ use \reed\Exception;
  * This class loads a PHP template into which it substitutes given values.
  *
  * @author Philip Graham
- * @package reed/generator
  */
 class CodeTemplateLoader {
 

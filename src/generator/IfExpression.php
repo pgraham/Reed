@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/generator
  */
 namespace reed\generator;
 
@@ -20,7 +19,6 @@ namespace reed\generator;
  * IfBlock.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/generator
  */
 class IfExpression {
 

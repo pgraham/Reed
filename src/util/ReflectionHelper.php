@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/util
  */
 namespace reed\util;
 
@@ -19,7 +18,6 @@ namespace reed\util;
  * This class provides extensions to PHP's built in reflection capabilities.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/util
  */
 class ReflectionHelper {
 

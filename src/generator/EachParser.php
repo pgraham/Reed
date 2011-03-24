@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/generator
  */
 namespace reed\generator;
 
@@ -22,7 +21,6 @@ use \reed\Exception;
  * populates the given code template.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reee/generator
  */
 class EachParser {
 

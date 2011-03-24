@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed
  */
 namespace reed;
 
@@ -35,7 +34,6 @@ use \SplFileInfo;
  * writable by the web server.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed
  */
 class WebSitePathInfo {
 

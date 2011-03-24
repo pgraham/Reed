@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/generator
  */
 namespace reed\generator;
 
@@ -19,7 +18,6 @@ namespace reed\generator;
  * This class encapsulates a parsed code template.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/generator
  */
 class CodeTemplate {
 

@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/generator
  */
 namespace reed\generator;
 
@@ -19,6 +18,5 @@ namespace reed\generator;
  * This class encapsulates the else clause of an if block.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/generator
  */
 class ElseClause extends Clause {}

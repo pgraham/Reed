@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed
  */
 namespace reed;
 
@@ -21,7 +20,6 @@ namespace reed;
  * given without requiring a code.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed
  */
 class Exception extends \Exception {
 

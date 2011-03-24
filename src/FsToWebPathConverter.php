@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed
  */
 namespace reed;
 
@@ -20,7 +19,6 @@ namespace reed;
  * a file system path and vice-versa.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed
  */
 class FsToWebPathConverter {
 
