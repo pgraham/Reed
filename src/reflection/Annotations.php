@@ -17,7 +17,6 @@ namespace reed\reflection;
 use \ArrayAccess;
 use \Reflector;
 
-use \reed\util\ReflectionHelper;
 use \reed\Exception;
 
 /**

@@ -12,7 +12,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed\util;
+namespace reed\reflection;
 
 /**
  * This class provides extensions to PHP's built in reflection capabilities.

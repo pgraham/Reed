@@ -13,9 +13,9 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  * @package reed/test/util
  */
-namespace reed\test\util;
+namespace reed\test\reflection;
 
-use \reed\util\ReflectionHelper;
+use \reed\reflection\ReflectionHelper;
 
 use \PHPUnit_Framework_TestCase as TestCase;
 
