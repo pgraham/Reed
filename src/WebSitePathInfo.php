@@ -104,8 +104,8 @@ class WebSitePathInfo {
     $this->_doc = $this->_getPath($docRoot, 'public_html');
     $this->_lib = $this->_getPath($libRoot, 'lib');
     $this->_src = $this->_getPath($srcRoot, 'src');
-    $this->_target = $this->_getPath($target, 'src/gen');
-    $this->_webTarget = $this->_getPath($webTarget, 'public_html/gen');
+    $this->_target = $this->_getPath($target, $this->_src . '/gen');
+    $this->_webTarget = $this->_getPath($webTarget, $this->_doc . '/gen');
 
     // Instantiate a path converter for transforming file system paths to web
     // paths and vice-versa
