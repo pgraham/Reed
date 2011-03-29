@@ -15,7 +15,7 @@
 namespace reed\generator;
 
 /**
- * Base class for all IfBlock clauses.
+ * Base class for all Clode blocks clauses.
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
@@ -39,6 +39,7 @@ abstract class Clause {
    * @param string $code
    */
   public function setCode($code) {
-    $this->_code = trim($code);
+    // Don't trim as we only want to replace tabs and spaces but not newlines
+    $this->_code = preg_replace('/^[\t ]*/', '', $code);
   }
 }

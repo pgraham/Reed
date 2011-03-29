@@ -30,8 +30,7 @@ class EachBlock extends Clause {
   /* The name of the value as used in the code block */
   private $_alias;
 
-  /* The amount of indentation to apply to each line of substituted code */
-  private $_indent;
+  /* The indentation level of each block */
 
   /* The name of the value to substitute into the block */
   private $_name;
@@ -77,6 +76,10 @@ class EachBlock extends Clause {
       return '';
     }
 
+    // De-indent code blocks by the level of indent of the block, since
+    // Indentation will be added when code is output
+    $baseIndent = preg_replace('/^' . $this->_indent . '/m', '', $this->_code);
+
     $subVals = $values[$this->_name];
     if (!is_array($subVals)) {
       $subVals = Array( $subVals );
@@ -86,7 +89,7 @@ class EachBlock extends Clause {
     foreach ($subVals as $val) {
       $toReplace = '${'. $this->_alias . '}';
 
-      $resolved = str_replace($toReplace, $val, $this->_code);
+      $resolved = str_replace($toReplace, $val, $baseIndent);
       $eaches[] = $resolved;
     }
 
@@ -106,11 +109,18 @@ class EachBlock extends Clause {
     return $this->_tag;
   }
 
-  /*
-   * Formats the given code so that it is indented the same as the declared if
-   * block.
+  /**
+   * @Override
    */
-  private function _outputCode($code) {
-    return preg_replace('/\n/m', "\n" . $this->_indent, $code);
+  public function setCode($code) {
+    // Because the code may be defined at a different level of indent then the
+    // replacement tag, we nett to re-indent the code to the indent level of
+    // the replacement tag.
+    $isMatch = preg_match('/^([\t ]*)/', $code, $matches);
+    if ($isMatch) {
+      $baseIndent = $matches[1];
+      $code = preg_replace("/^$baseIndent/m", $this->_indent, $code);
+    }
+    parent::setCode($code);
   }
 }

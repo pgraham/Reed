@@ -32,7 +32,7 @@ class AllTests {
 
     $suite->addTestSuite(generator\AllTests::suite());
 
-    $suite->addTestSuite('reed\test\util\ReflectionHelperTest');
+    $suite->addTestSuite('reed\test\reflection\ReflectionHelperTest');
 
     return $suite;
   }
