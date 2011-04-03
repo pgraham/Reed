@@ -151,6 +151,15 @@ class WebSitePathInfo {
   }
 
   /**
+   * Getter for the web site's web accissible root.
+   *
+   * @return string
+   */
+  public function getWebRoot() {
+    return $this->_webRoot;
+  }
+
+  /**
    * Getter for the web site's web accessible target directory as a file
    * system path.
    *
