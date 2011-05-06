@@ -41,7 +41,9 @@ class IfExpression {
    */
   public function __construct($expression) {
     if (strpos($expression, '=') !== false) {
-      list($this->_name, $this->_value) = explode('=', $expression, 2);
+      $parts = explode('=', $expression, 2);
+      $this->_name = trim($parts[0]);
+      $this->_value = trim($parts[1]);
     } else {
       $this->_name = $expression;
     }

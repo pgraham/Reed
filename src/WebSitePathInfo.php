@@ -151,7 +151,7 @@ class WebSitePathInfo {
   }
 
   /**
-   * Getter for the web site's web accissible root.
+   * Getter for the web site's web accessible root.
    *
    * @return string
    */
