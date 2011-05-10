@@ -54,8 +54,10 @@ class FsToWebPathConverter {
    */
   public function fsToWeb($fsPath) {
     if (strpos($fsPath, $this->_docRoot) === false) {
-      throw new Exception('The given file system path is not a subdirectory of'
-        . ' the converter\'s document root');
+      throw new Exception("The given file system path is not a subdirectory of"
+        . " the converter\'s document root.\n"
+        . "Document root: {$this->_docRoot}\n"
+        . "Path: $fsPath");
     }
 
     $webPath = str_replace($this->_docRoot, '', $fsPath);
