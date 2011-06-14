@@ -20,17 +20,16 @@ use \reed\Exception;
  * This class represents an ${each:name as alias} ... ${done} substitution block
  * in a code template.
  *
+ *
  * @author Philip Graham <philip@zeptech.ca>
  */
-class EachBlock extends Clause {
+class EachBlock extends CodeBlock {
 
   /** The number of each blocks that have been parsed */
   public static $numBlocks = 0;
 
   /* The name of the value as used in the code block */
   private $_alias;
-
-  /* The indentation level of each block */
 
   /* The name of the value to substitute into the block */
   private $_name;
@@ -46,7 +45,7 @@ class EachBlock extends Clause {
    *   valueName as alias
    */
   public function __construct($indent, $expression) {
-    $this->_indent = $indent;
+    parent::__construct($indent);
 
     $parts = preg_split('/ as /i', $expression, 2);
     if (count($parts) !== 2) {
@@ -54,8 +53,8 @@ class EachBlock extends Clause {
         .' ${each:<val-name> as <alias>}');
     }
 
-    $this->_name = $parts[0];
-    $this->_alias = $parts[1];
+    $this->_name = trim($parts[0]);
+    $this->_alias = trim($parts[1]);
 
     $this->_tag = '${each' . ++self::$numBlocks . '}';
   }
@@ -67,7 +66,7 @@ class EachBlock extends Clause {
    * @param Array $values
    * @return string The resolved code block for the given substitution values.
    */
-  public function forValues(Array $values) {
+  public function forValues(array $values, $code = null) {
     if (!array_key_exists($this->_name, $values)) {
       throw new Exception("No substitution value for {$this->_name}");
     }
@@ -76,27 +75,22 @@ class EachBlock extends Clause {
       return '';
     }
 
-    // De-indent code blocks by the level of indent of the block, since
-    // Indentation will be added when code is output
-    $baseIndent = preg_replace('/^' . $this->_indent . '/m', '', $this->_code);
-
     $subVals = $values[$this->_name];
     if (!is_array($subVals)) {
-      $subVals = Array( $subVals );
+      $subVals = array( $subVals );
     }
 
-    $eaches = Array();
+    $eaches = array();
     foreach ($subVals as $val) {
-      $toReplace = '${'. $this->_alias . '}';
+      $values[$this->_alias] = $val;
 
-      $resolved = str_replace($toReplace, $val, $baseIndent);
-      $eaches[] = $resolved;
+      $resolved = parent::forValues($values);
+      $eaches[] = $this->_indent . $resolved;
     }
 
     $each = implode("\n", $eaches);
-    $indented = preg_replace('/\n/m', "\n" . $this->_indent, $each);
 
-    return $indented;
+    return ltrim($each);
   }
 
   /**
@@ -109,18 +103,4 @@ class EachBlock extends Clause {
     return $this->_tag;
   }
 
-  /**
-   * @Override
-   */
-  public function setCode($code) {
-    // Because the code may be defined at a different level of indent then the
-    // replacement tag, we nett to re-indent the code to the indent level of
-    // the replacement tag.
-    $isMatch = preg_match('/^([\t ]*)/', $code, $matches);
-    if ($isMatch) {
-      $baseIndent = $matches[1];
-      $code = preg_replace("/^$baseIndent/m", $this->_indent, $code);
-    }
-    parent::setCode($code);
-  }
 }

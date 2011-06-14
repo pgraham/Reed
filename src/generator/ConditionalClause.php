@@ -20,7 +20,7 @@ namespace reed\generator;
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
-abstract class ConditionalClause extends Clause {
+abstract class ConditionalClause extends CodeBlock {
 
   /*
    * The expression that must be satisfied in order for this clauses code block
@@ -31,9 +31,12 @@ abstract class ConditionalClause extends Clause {
   /**
    * Create a new IfClause.
    *
+   * @param string $indent The indentation of the clause declaration.
    * @param string $expression Unparsed expression string.
    */
-  public function __construct($expression) {
+  public function __construct($expression, $indent) {
+    parent::__construct($indent);
+
     $this->_expression = new IfExpression($expression);
   }
 

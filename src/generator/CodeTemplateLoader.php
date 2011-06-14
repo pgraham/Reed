@@ -107,11 +107,8 @@ class CodeTemplateLoader {
     }
     $file = file_get_contents($templatePath);
 
-    $template = new CodeTemplate();
     $parser = new CodeTemplateParser();
-
-    $parsed = $parser->parse($file, $template);
-    $template->setCode($parsed); 
+    $template = $parser->parse($file);
 
     return $template;
   }

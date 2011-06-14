@@ -30,7 +30,7 @@ class AllTests {
   public static function suite() {
     $suite = new TestSuite('reed\generator test suite');
 
-    $suite->addTestSuite('reed\test\generator\CodeTemplateLoaderTest');
+    $suite->addTestSuite('reed\test\generator\TemplateSubstitutionTest');
     $suite->addTestSuite('reed\test\generator\EachParserTest');
 
     return $suite;

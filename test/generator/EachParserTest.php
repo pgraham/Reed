@@ -50,13 +50,11 @@ class EachParserTest extends TestCase {
   }
 
   public function testLoadEach() {
-    // This test does not work.  It should be obsoleted anyway by the planned
-    // CodeTemplate refactorings
-    $this->markTestSkipped();
     $code = file_get_contents(__DIR__ . '/each.template');
     $template = new CodeTemplate();
 
     $parsed = $this->_parser->parse($code, $template);
+    $template->setCode($parsed);
     $resolved = $template->forValues(Array
       (
         'eached' => Array('I am line #1', 'I am line #2', 'I am line #3')
@@ -68,6 +66,36 @@ class EachParserTest extends TestCase {
       . "  I am line #1\n"
       . "  I am line #2\n"
       . "  I am line #3\n";
+
+    $this->assertEquals($expected, $resolved);
+  }
+
+  public function testResolveEachWithIndexedSubstitutions() {
+    $template = new CodeTemplate();
+    $code = "This is a sample template that contains an each substitution."
+      . "\n\n"
+      . "  \${each:indexed AS indexable}\n"
+      . "    \${indexable[id]}: \${indexable[val]}\n"
+      . "  \${done}\n";
+
+    $parsed = $this->_parser->parse($code, $template);
+    $template->setCode($parsed);
+    $resolved = $template->forValues(array
+      (
+        'indexed' => array
+          (
+            array( 'id' => 1, 'val' => 'I am line #1'),
+            array( 'id' => 2, 'val' => 'I am line #2'),
+            array( 'id' => 3, 'val' => 'I am line #3')
+          )
+      )
+    );
+
+    $expected = "This is a sample template that contains an each substitution."
+      . "\n\n"
+      . "  1: I am line #1\n"
+      . "  2: I am line #2\n"
+      . "  3: I am line #3\n";
 
     $this->assertEquals($expected, $resolved);
   }

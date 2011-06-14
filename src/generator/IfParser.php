@@ -67,10 +67,10 @@ class IfParser {
           $indent = $ifParams[1];
           $expression = $ifParams[2];
 
-          $curBlock = new IfBlock($ifNum, $indent);
+          $curBlock = new IfBlock($ifNum);
           $template->addIf($curBlock);
 
-          $curClause = new IfClause($expression);
+          $curClause = new IfClause($expression, $indent);
           $curBlock->setIf($curClause);
 
           $parsedLines[] = "$indent\${if{$ifNum}}";
@@ -79,24 +79,21 @@ class IfParser {
         }
 
       } else if (preg_match(self::ELSEIF_REGEX, $line, $ifParams)) {
-        $code = $this->_parser->parse(implode("\n", $curCode), $template);
-        $curClause->setCode($code);
+        $curClause->setCode(implode("\n", $curCode));
 
-        $curClause = new ElseIfClause($ifParams[2]);
+        $curClause = new ElseIfClause($ifParams[2], $indent);
         $curBlock->addElseIf($curClause);
         $curCode = Array();
 
       } else if (preg_match(self::ELSE_REGEX, $line, $ifParams)) {
-        $code = $this->_parser->parse(implode("\n", $curCode), $template);
-        $curClause->setCode($code);
+        $curClause->setCode(implode("\n", $curCode));
 
-        $curClause = new ElseClause();
+        $curClause = new ElseClause($indent);
         $curBlock->setElse($curClause);
         $curCode = Array();
 
       } else if (preg_match(self::FI_REGEX, $line, $ifParams)) {
-        $code = $this->_parser->parse(implode("\n", $curCode), $template);
-        $curClause->setCode($code);
+        $curClause->setCode(implode("\n", $curCode));
 
         $curBlock = null;
         $curClause = null;

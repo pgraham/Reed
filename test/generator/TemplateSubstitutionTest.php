@@ -27,7 +27,7 @@ require_once __DIR__ . '/../test-common.php';
  * @author Philip Graham <philip@zeptech.ca>
  * @package reed/test/generator
  */
-class CodeTemplateLoaderTest extends TestCase {
+class TemplateSubstitutionTest extends TestCase {
 
   private $_loader;
 
@@ -56,11 +56,16 @@ class CodeTemplateLoaderTest extends TestCase {
   public function testLoadJoin() {
     $template = $this->_loader->load('join', Array
       (
+        'cond'   => true,
         'joined' => Array('val1', 'val2', 'val3')
       )
     );
 
     $expected = file_get_contents(__DIR__ . '/join.expected');
+
+    echo "Join Test\n====================\n\n";
+    echo "Expected:\n\n$expected\n\n";
+    echo "Actual:\n\n$template\n\n";
 
     $this->assertEquals($expected, $template);
   }
@@ -85,6 +90,19 @@ class CodeTemplateLoaderTest extends TestCase {
     );
 
     $this->assertEquals(trim($expected), trim($template));
+  }
+
+  public function testLoadArraySubstitution() {
+    $values = array(
+      'val' => array(
+        'id' => 1,
+        'name' => 'value1'
+      )
+    );
+    $template = $this->_loader->load('array_sub', $values);
+
+    $expected = file_get_contents(__DIR__ . '/array_sub.expected');
+    $this->assertEquals($expected, $template);
   }
 
   public function testLoadIf() {
@@ -158,4 +176,5 @@ class CodeTemplateLoaderTest extends TestCase {
     $template = $this->_loader->load('if_elseif_else', $values);
     $this->assertEquals($expected . $elseMsg, trim($template));
   }
+
 }

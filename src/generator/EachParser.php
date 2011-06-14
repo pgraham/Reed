@@ -79,8 +79,7 @@ class EachParser {
           }
 
         } else if (preg_match(self::DONE_REGEX, $line)) {
-          $code = $this->_parser->parse(implode("\n", $curCode), $template);
-          $curBlock->setCode($code);
+          $curBlock->setCode(implode("\n", $curCode));
 
           $curBlock = null;
           $curCode = Array();

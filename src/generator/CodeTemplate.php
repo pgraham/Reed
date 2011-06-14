@@ -19,7 +19,7 @@ namespace reed\generator;
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
-class CodeTemplate {
+class CodeTemplate extends CodeBlock {
 
   /* The each substitution tags */
   private $_eaches = Array();
@@ -27,27 +27,15 @@ class CodeTemplate {
   /* The template's if blocks */
   private $_ifs = Array();
 
-  /* The join substitution tags */
-  private $_joins = Array();
-
-  /* The JSON substitution tags */
-  private $_jsons = Array();
-
-  /* The simple substitution tags */
-  private $_tags = Array();
-
-  /*
-   * Parsed code for the template.  The parsing process will replace if-blocks
-   * with a single substitution tag.
-   */
-  private $_code;
-
   /**
    * Create a new code template for the given text.
    *
    * @param string $template
    */
-  public function __construct() {}
+  public function __construct() {
+    // Initialize the parent with no indent
+    parent::__construct('');
+  }
 
   /**
    * Add an each to the template.
@@ -68,52 +56,15 @@ class CodeTemplate {
   }
 
   /**
-   * Add a join to the template.
-   *
-   * @param string $name The name of the value to join together before inserting
-   *   into the template.
-   * @param string $glue The string with which to glue together the joined
-   *   values.
-   */
-  public function addJoin($name, $glue) {
-    $glue = str_replace('\\n', "\n", $glue);
-
-    $this->_joins[] = Array
-    (
-      'name' => $name,
-      'glue' => $glue
-    );
-  }
-
-  /**
-   * Add a json substitution to the template.
-   *
-   * @param string $name The name of the value to encode as JSON before
-   *   inserting into the template.
-   */
-  public function addJson($name) {
-    $this->_jsons[] = $name;
-  }
-
-  /**
-   * Add a simple tag to the template.
-   *
-   * @param string $name The name of the value to substitute into the template.
-   */
-  public function addTag($name) {
-    if (!in_array($name, $this->_tags)) {
-      $this->_tags[] = $name;
-    }
-  }
-
-  /**
    * Substitute the given values into the template and return the result.
    *
    * @param array $values The substitution values.
    * @return string The template with values substituted for tags.
    */
-  public function forValues(Array $values) {
-    $code = $this->_code;
+  public function forValues(array $values, $code = null) {
+    if ($code === null) {
+      $code = $this->_code;
+    }
 
     // Do the if replacement first since the if code may contain other
     // substitutions
@@ -133,65 +84,11 @@ class CodeTemplate {
       foreach ($this->_eaches AS $eachBlock) {
         $toReplace = $eachBlock->getTag();
         $replacement = $eachBlock->forValues($values);
-
+        
         $code = str_replace($toReplace, $replacement, $code);
       }
     }
     
-    // Determine the substitution tags and the replacement values for
-    // populating the template
-    $toReplace = Array();
-    $replacements = Array();
-    foreach ($values AS $name => $value) {
-      if (substr($name, 0, 2) == '${' && substr($name, -1) == '}') {
-        $name = substr($name, 2, -1);
-      }
-
-      foreach ($this->_joins AS $join) {
-        if ($join['name'] != $name) {
-          continue;
-        }
-
-        $tagGlue = str_replace("\n", '\\n', $join['glue']);
-
-        $toReplace[] = "\${join:$name:$tagGlue}";
-        $replacements[] = implode($join['glue'],
-          (is_array($value))
-            ? $value
-            : Array($value)
-        );
-      }
-
-      foreach ($this->_jsons AS $json) {
-        if ($json != $name) {
-          continue;
-        }
-
-        $toReplace[] = "\${json:$name}";
-        $replacements[] = json_encode(
-          (is_array($value))
-            ? $value
-            : Array($value)
-        );
-      }
-
-      foreach ($this->_tags AS $tag) {
-        if ($tag == $name) {
-          $toReplace[] = '${' . $tag . '}';
-          $replacements[] = $value;
-        }
-      }
-    }
-
-    return str_replace($toReplace, $replacements, $code);
-  }
-
-  /**
-   * Set the code for the template.
-   *
-   * @param string $code The template's code
-   */
-  public function setCode($code) {
-    $this->_code = $code;
+    return parent::forValues($values, $code);
   }
 }

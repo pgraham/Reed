@@ -19,4 +19,4 @@ namespace reed\generator;
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
-class ElseClause extends Clause {}
+class ElseClause extends CodeBlock {}

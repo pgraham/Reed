@@ -18,6 +18,9 @@ namespace reed\generator;
  * This class encapsulates expression evaluation for a conditional clause of an
  * IfBlock.
  *
+ * TODO - Abstract expression evaluation then have this class consume a set of
+ *        supported operators
+ *
  * @author Philip Graham <philip@zeptech.ca>
  */
 class IfExpression {
@@ -34,16 +37,36 @@ class IfExpression {
    */
   private $_value;
 
+  /* The operator to use for evaluating the expression */
+  private $_operator;
+
   /**
    * Create a new IfExpression.
    *
    * @param string $expression Unparsed expression string.
    */
   public function __construct($expression) {
+    /*
+    foreach ($this->_evaluators AS $evaluator) {
+      $evaluator->canEvaluate($expression);
+      $this->_evaluator = $evaluator;
+    }
+
+    if ($this->_evaluator === null) {
+      $this->_evaluator = new BooleanEvaluator(true);
+    }
+    */
+
     if (strpos($expression, '=') !== false) {
       $parts = explode('=', $expression, 2);
       $this->_name = trim($parts[0]);
       $this->_value = trim($parts[1]);
+      $this->_operator = '=';
+    } else if (strpos($expression, '>') !== false) {
+      $parts = explode('>', $expression, 2);
+      $this->_name = trim($parts[0]);
+      $this->_value = trim($parts[1]);
+      $this->_operator = '>';
     } else {
       $this->_name = $expression;
     }
@@ -57,11 +80,21 @@ class IfExpression {
    * @return boolean
    */
   public function isSatisfiedBy(Array $values) {
+    if (!isset($values[$this->_name])) {
+      return false;
+    }
+
     if ($this->_value === null) {
-      return isset($values[$this->_name]) && $values[$this->_name] === true;
-    } else {
-      return isset($values[$this->_name]) &&
-        $values[$this->_name] == $this->_value;
+      return $values[$this->_name] === true;
+    }
+
+    $val = $values[$this->_name];
+    if ($this->_operator === '=') {
+      return $val == $this->_value;
+
+    } else if ($this->_operator === '>') {
+      return $val > $this->_value;
+
     }
   }
 }
