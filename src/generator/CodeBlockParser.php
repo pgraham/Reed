@@ -21,15 +21,111 @@ namespace reed\generator;
  */
 class CodeBlockParser {
 
-  const TAG_REGEX      = '/\$\{([^\}]+)}/';
+  const DONE_REGEX     = '/^[\t ]*\$\{done\}/';
+  const EACH_REGEX     = '/^([\t ]*)\$\{each:([^\}]+)\}/';
+  const ELSE_REGEX     = '/^([\t ]*)\$\{else\}$/';
+  const ELSEIF_REGEX   = '/^([\t ]*)\$\{elseif:([^\}]+)\}$/';
+  const FI_REGEX       = '/^([\t ]*)\$\{fi\}$/';
+  const IF_REGEX       = '/^([\t ]*)\$\{if:([^\}]+)\}$/';
   const JOIN_REGEX     = '/\$\{join:([^:]+):([^\}]+)\}/';
   const JSON_REGEX     = '/\$\{json:([^\}]+)\}/';
+  const TAG_REGEX      = '/\$\{([^\}]+)}/';
+
+  private static $_NUM_IFS = 0;
 
   /**
-   * Parse a given code block for substitution tags.
+   * Parse a given piece of code for template elements and store the results in
+   * the given CodeBlock implementation.
+   *
+   * @param string $code The code to parse
+   * @param CodeBlock $block The block of code to populate with the parsed code
+   * @return string The original code with nested blocks replaced with simple
+   *   substitution tags.
    */
-  public function parse(CodeBlock $block) {
-    $code = $block->getCode();
+  public static function parse($code, CodeBlock $block) {
+    // Parse blocks.  All block parsing is combined into a single loop so that
+    // nested blocks are not parsed.  This is done by parsing the file one line
+    // at a time and only parsing one level deep.
+    $lines = explode("\n", $code);
+    $parsedLines = Array();
+
+    $curBlock = null;
+    $curClause = null;
+    $curCode = Array();
+    foreach ($lines AS $line) {
+      $ifParams = Array();
+
+      if ($curBlock === null) {
+
+        if (preg_match(self::IF_REGEX, $line, $ifParams)) {
+          $ifNum = ++self::$_NUM_IFS;
+          $indent = $ifParams[1];
+          $expression = $ifParams[2];
+
+          $curBlock = new IfBlock($ifNum);
+          $block->addIf($curBlock);
+
+          $curClause = new IfClause($expression, $indent);
+          $curBlock->setIf($curClause);
+
+          $parsedLines[] = "$indent\${if{$ifNum}}";
+        } else if (preg_match(self::EACH_REGEX, $line, $eachParams)) {
+          $indent = $eachParams[1];
+          $expression = $eachParams[2];
+
+          $curBlock = new EachBlock($indent, $expression);
+          $block->addEach($curBlock);
+
+          $eachTag = $curBlock->getTag();
+          $tagLine = $indent . str_replace($eachParams[0], $eachTag, $line);
+          $parsedLines[] = $tagLine;
+        } else {
+          $parsedLines[] = $line;
+        }
+
+      } else if ($curBlock instanceof \reed\generator\IfBlock) {
+
+        if (preg_match(self::ELSEIF_REGEX, $line, $ifParams)) {
+          $curClause->setCode(implode("\n", $curCode));
+
+          $curClause = new ElseIfClause($ifParams[2], $indent);
+          $curBlock->addElseIf($curClause);
+          $curCode = Array();
+
+        } else if (preg_match(self::ELSE_REGEX, $line, $ifParams)) {
+          $curClause->setCode(implode("\n", $curCode));
+
+          $curClause = new ElseClause($indent);
+          $curBlock->setElse($curClause);
+          $curCode = Array();
+
+        } else if (preg_match(self::FI_REGEX, $line, $ifParams)) {
+          $curClause->setCode(implode("\n", $curCode));
+
+          $curBlock = null;
+          $curClause = null;
+          $curCode = Array();
+
+        } else {
+          $curCode[] = $line;
+        }
+
+      } else if ($curBlock instanceof \reed\generator\EachBlock) {
+
+        if (preg_match(self::DONE_REGEX, $line)) {
+          $curBlock->setCode(implode("\n", $curCode));
+
+          $curBlock = null;
+          $curCode = Array();
+
+        } else {
+          $curCode[] = $line;
+        }
+
+      }
+    }
+
+    $code = implode("\n", $parsedLines);
 
     // Get joins
     $joins = Array();
@@ -69,5 +165,7 @@ class CodeBlockParser {
 
       $block->addTag($tag[1]);
     }
+
+    return $code;
   }
 }

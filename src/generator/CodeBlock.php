@@ -24,6 +24,12 @@ abstract class CodeBlock {
   /* The code that is output if the expression for this clause is satisfied */
   protected $_code;
 
+  /* The each substitution tags */
+  protected $_eaches = Array();
+
+  /* The template's if blocks */
+  protected $_ifs = Array();
+
   /* The base indentation level for the code block. */
   protected $_indent;
 
@@ -45,6 +51,24 @@ abstract class CodeBlock {
    */
   public function __construct($indent) {
     $this->_indent = str_replace("\t", '  ', $indent);
+  }
+
+  /**
+   * Add an each to the template.
+   *
+   * @param EachBlock $each
+   */
+  public function addEach($each) {
+    $this->_eaches[] = $each;
+  }
+
+  /**
+   * Add an if block to the template.
+   *
+   * @param IfBlock $ifBlock Encapsulated if block.
+   */
+  public function addIf(IfBlock $ifBlock) {
+    $this->_ifs[] = $ifBlock;
   }
 
   /**
@@ -105,6 +129,29 @@ abstract class CodeBlock {
   public function forValues(array $values, $code = null) {
     if ($code === null) {
       $code = $this->_code;
+    }
+
+    // Do the if and each replacements first since the if code may contain other
+    // substitutions
+    if (count($this->_ifs) > 0) {
+      // The if statements should have been added in an order that will
+      // make it possible to loop through the array once with nested ifs
+      // already substituted in by the time they are reached
+      foreach ($this->_ifs AS $ifBlock) {
+        $toReplace    = "\${if{$ifBlock->getId()}}";
+        $replacement = $ifBlock->forValues($values);
+
+        $code = str_replace($toReplace, $replacement, $code);
+      }
+    }
+
+    if (count($this->_eaches) > 0) {
+      foreach ($this->_eaches AS $eachBlock) {
+        $toReplace = $eachBlock->getTag();
+        $replacement = $eachBlock->forValues($values);
+        
+        $code = str_replace($toReplace, $replacement, $code);
+      }
     }
 
     $toReplace = array();
@@ -179,30 +226,29 @@ abstract class CodeBlock {
    *   characters will be replace with two space characters.
    */
   public function setCode($code) {
+    $code = CodeBlockParser::parse($code, $this);
 
-    $this->_code = str_replace("\t", '  ', $code);
+    // Replace tab characters with spaces
+    $code = str_replace("\t", '  ', $code);
 
     // Assume that code is defined at or deeper than the code block declaration.
-    // The code may also include lines that are indented deeper than the base
-    // and this needs to be preserved.  So we determine that the base indent
-    // is that of the first line in the block and use that to re-indent the code
-    // to a base level that is the same as the block declaration.
+    // Any indentation deeper than the base needs to be preserved, so the base
+    // indentation is determined to be that of the first line in the block.
+    // This base indentation level is then used to re-indent the code to a base
+    // level that is the same as the block declaration.
     $matches = array();
     if (preg_match('/^([ ]*)/', $code, $matches)) {
       $baseIndent = $matches[1];
-      $this->_code = preg_replace(
+      $dode = preg_replace(
         "/^$baseIndent/m",
         $this->_indent,
-        $this->_code);
+        $code);
     }
 
     // When replacement happens, indent for the block declaration isn't replaced
     // so we don't want any indentation at the start of the first line of the
     // code
-    $this->_code = ltrim($this->_code);
-
-    $parser = new CodeBlockParser();
-    $parser->parse($this);
+    $this->_code = ltrim($code);
   }
 
   /**

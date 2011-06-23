@@ -31,6 +31,8 @@ class AllTests {
     $suite = new TestSuite('reed\generator test suite');
 
     $suite->addTestSuite('reed\test\generator\TemplateSubstitutionTest');
+    $suite->addTestSuite('reed\test\generator\IfSubstitutionTest');
+    $suite->addTestSuite('reed\test\generator\IfExpressionTest');
     $suite->addTestSuite('reed\test\generator\EachParserTest');
 
     return $suite;

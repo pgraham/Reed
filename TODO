@@ -3,9 +3,9 @@
   -What is already out there?
   -log4j has good extensible structure, can it be ported?
 
-- Move tag addition into CodeBlock from CodeTemplate
-- Move substitution into a helper class used by CodeTemplate, IfBlock and
-  EachBlock to perform template resolution in a uniform way.  This will let
-  Array indexed substitution and detection to be handled in one spot
-  respectively.
-- Update EachBlock and IfExpression evaluation to handle indexed references.
+- There is some refactoring potential in the block parsing portion of
+  CodeBlockParser.  A BlockDefinition interface can be created to handle the
+  common aspects and an implementation for each block and if blocks can be
+  created and used.  The if block implementation will need to override set code
+  to parse out each of the clauses.
+- Update EachBlock evaluation to handle indexed references.

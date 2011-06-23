@@ -21,6 +21,8 @@ namespace reed\generator;
  */
 class IfParser {
 
+  private static $_NUM_IFS = 0;
+
   const ELSE_REGEX     = '/^([\t ]*)\$\{else\}$/';
 
   const ELSEIF_REGEX   = '/^([\t ]*)\$\{elseif:([^\}]+)\}$/';
@@ -29,28 +31,16 @@ class IfParser {
 
   const IF_REGEX       = '/^([\t ]*)\$\{if:([^\}]+)\}$/';
 
-  /* The CodeParser with which to parse code blocks */
-  private $_parser;
-
-  /**
-   * Create a new IfParser
-   *
-   * @param CodeTemplateParser $parser
-   */
-  public function __construct(CodeTemplateParser $parser) {
-    $this->_parser = $parser;
-  }
-
   /**
    * Parse the given code for if blocks and populate the CodeTemplate with a
    * matching object representation.
    *
    * @param string $code The code template parse.
-   * @param CodeTemplate $template The object to populate.
+   * @param CodeBlock $block The object to populate.
    * @return The code template with if blocks replaced by shorter tags for
    *   substitution.
    */
-  public function parse($code, CodeTemplate $template) {
+  public static function parse($code, CodeBlock $block) {
     $lines = explode("\n", $code);
     $parsedLines = Array();
 
@@ -63,12 +53,12 @@ class IfParser {
       if ($curBlock === null) {
 
         if (preg_match(self::IF_REGEX, $line, $ifParams)) {
-          $ifNum = ++$this->_numIfs;
+          $ifNum = ++self::$_NUM_IFS;
           $indent = $ifParams[1];
           $expression = $ifParams[2];
 
           $curBlock = new IfBlock($ifNum);
-          $template->addIf($curBlock);
+          $block->addIf($curBlock);
 
           $curClause = new IfClause($expression, $indent);
           $curBlock->setIf($curClause);

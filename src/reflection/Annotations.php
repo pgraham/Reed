@@ -36,12 +36,18 @@ class Annotations implements ArrayAccess {
 
   /**
    * Create a new Annotations instance for the given reflection element.
+   * Ommiting the Reflector will create an empty annotations object.
    *
    * @param Reflector $reflector The object from which to parse annotations.
    * @throws Exception If the given object does not contain a getDocComment()
    *   method.
    */
-  public function __construct(Reflector $reflector) {
+  public function __construct(Reflector $reflector = null) {
+    if ($reflector === null) {
+      $this->_annotations = array();
+      return;
+    }
+
     if (!method_exists($reflector, 'getDocComment')) {
       throw new Exception("Only Reflector implementations that provide a"
         . " getDocComment() method can be parsed for annotations.");

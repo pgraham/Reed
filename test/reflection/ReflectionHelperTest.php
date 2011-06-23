@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/test/util
  */
 namespace reed\test\reflection;
 
@@ -25,7 +24,6 @@ require_once __DIR__ . '/../test-common.php';
  * This class tests the Reed\Util\ReflectionHelper class.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/test/util
  */
 class ReflectionHelperTest extends TestCase {
 

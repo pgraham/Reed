@@ -27,30 +27,17 @@ class EachParser {
   const DONE_REGEX     = '/^[\t ]*\$\{done\}/';
   const EACH_REGEX     = '/^([\t ]*)\$\{each:([^\}]+)\}/';
 
-  /* Code parser to use to parse each blocks */
-  private $_codeParser;
-
-  /**
-   * Create a new each parser.
-   *
-   * @param CodeTemplateParser $parser The parser to use to parse the code of
-   *   each block.
-   */
-  public function __construct(CodeTemplateParser $parser) {
-    $this->_parser = $parser;
-  }
-
   /**
    * Parse the given code template for each substitutions and populate the given
    * {@link CodeTemplate}.
    *
    * @param string $code The code template to parse
-   * @param CodeTemplate The object to populate with each substitution
+   * @param CodeBlock $block The object to populate with each substitution
    *   information.
    * @return string Modified code to be passed into the given CodeTemplate's
    *   forValues(...) method.
    */
-  public function parse($code, CodeTemplate $template) {
+  public static function parse($code, CodeBlock $block) {
     $lines = explode("\n", $code);
     $parsedLines = Array();
 
@@ -69,7 +56,7 @@ class EachParser {
             $expression = $eachParams[2];
 
             $curBlock = new EachBlock($indent, $expression);
-            $template->addEach($curBlock);
+            $block->addEach($curBlock);
 
             $eachTag = $curBlock->getTag();
             $tagLine = $indent . str_replace($eachParams[0], $eachTag, $line);

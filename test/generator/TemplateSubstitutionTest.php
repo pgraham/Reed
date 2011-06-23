@@ -11,7 +11,6 @@
  * =============================================================================
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
- * @package reed/test/generator
  */
 namespace reed\test\generator;
 
@@ -25,7 +24,6 @@ require_once __DIR__ . '/../test-common.php';
  * This class tests the CodeTemplateLoader class.
  *
  * @author Philip Graham <philip@zeptech.ca>
- * @package reed/test/generator
  */
 class TemplateSubstitutionTest extends TestCase {
 
@@ -63,33 +61,7 @@ class TemplateSubstitutionTest extends TestCase {
 
     $expected = file_get_contents(__DIR__ . '/join.expected');
 
-    echo "Join Test\n====================\n\n";
-    echo "Expected:\n\n$expected\n\n";
-    echo "Actual:\n\n$template\n\n";
-
     $this->assertEquals($expected, $template);
-  }
-
-  public function testLoadBooleanIf() {
-    $template = $this->_loader->load('boolean_if', Array
-      (
-        'boolval' => true
-      )
-    );
-
-    $expected = file_get_contents(__DIR__ . '/boolean_if-base.expected');
-
-    $condMsg = "\n  I was included conditionally!";
-
-    $this->assertEquals($expected.$condMsg, trim($template));
-
-    $template = $this->_loader->load('boolean_if', Array
-      (
-        'boolval' => false
-      )
-    );
-
-    $this->assertEquals(trim($expected), trim($template));
   }
 
   public function testLoadArraySubstitution() {

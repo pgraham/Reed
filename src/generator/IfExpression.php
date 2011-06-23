@@ -20,25 +20,71 @@ namespace reed\generator;
  *
  * TODO - Abstract expression evaluation then have this class consume a set of
  *        supported operators
+ *      - Add support for and boolean operators.  Bracketing will be implied,
+ *        ORs will be grouped and separated by ANDs.
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
 class IfExpression {
 
-  /*
-   * The name of the value against which the expression is evaluated.
-   */
-  private $_name;
+  /* Whether or not the class has been statically constructed. */
+  private static $_initialized = false;
 
   /*
-   * The expected value of the value with the specified name.  If this is null
-   * then the expression will be true if the value of the specifed value is a
-   * boolean true.
+   * Non-capturing regular expression for all supported operators.  Any
+   * strings matched by this regexp must have a matching entry in opEvaluators.
    */
-  private $_value;
+  private static $_ops = '(?:=|>|>=|<|<=|!=)';
 
-  /* The operator to use for evaluating the expression */
-  private $_operator;
+  private static $_opEvaluators;
+
+  /*
+   * Static constructor.  Will happen the first time an instance of this class
+   * is created.
+   */
+  private static function _initialize() {
+    self::$_initialized = true;
+
+    self::$_opEvaluators = array(
+      // '=' Evaluator
+      '=' => function ($a, $b) {
+        return $a === $b;
+      },
+
+      // '>' Evaluator
+      '>' => function ($a, $b) {
+        return $a > $b;
+      },
+
+      // '>=' Evaluator
+      '>=' => function ($a, $b) {
+        return $a >= $b;
+      },
+
+      // '<' Evaluator
+      '<' => function ($a, $b) {
+        return $a < $b;
+      },
+
+      // '<=' Evaluator
+      '<=' => function ($a, $b) {
+        return $a <= $b;
+      },
+
+      // '!=' Evaluator
+      '!=' => function ($a, $b) {
+        return $a !== $b;
+      }
+    );
+  }
+
+  /*
+   * ===========================================================================
+   * Instance
+   * ===========================================================================
+   */
+
+  private $_conditions = array();
 
   /**
    * Create a new IfExpression.
@@ -46,30 +92,55 @@ class IfExpression {
    * @param string $expression Unparsed expression string.
    */
   public function __construct($expression) {
-    /*
-    foreach ($this->_evaluators AS $evaluator) {
-      $evaluator->canEvaluate($expression);
-      $this->_evaluator = $evaluator;
+    if (!self::$_initialized) {
+      self::_initialize();
     }
 
-    if ($this->_evaluator === null) {
-      $this->_evaluator = new BooleanEvaluator(true);
-    }
-    */
+    $ops = self::$_ops;
+    $varRe = '[[:alnum:]_-]+(?:\[[[:alnum:]_-]+\])?';
+    $orRe = "\s*($varRe\s*(?:$ops\s*$varRe)?)\s*or\s*(.*)\s*";
 
-    if (strpos($expression, '=') !== false) {
-      $parts = explode('=', $expression, 2);
-      $this->_name = trim($parts[0]);
-      $this->_value = trim($parts[1]);
-      $this->_operator = '=';
-    } else if (strpos($expression, '>') !== false) {
-      $parts = explode('>', $expression, 2);
-      $this->_name = trim($parts[0]);
-      $this->_value = trim($parts[1]);
-      $this->_operator = '>';
+    $exp = $expression;
+    while ($exp !== null) {
+      $matches = array();
+      if (preg_match("/$orRe/", $exp, $matches)) {
+        $comp = trim($matches[1]);
+        $exp = trim($matches[2]);
+
+        $this->_buildCondition($comp);
+
+      } else {
+        $this->_buildCondition($exp);
+        $exp = null;
+      }
+
+    }
+  }
+
+  private function _buildCondition($exp) {
+    $ops = self::$_ops;
+
+    $matches = array();
+    if (preg_match("/\s*(.*)\s*($ops)\s*(.*)\s*/", $exp, $matches)) {
+      $name = trim($matches[1]);
+      $op = trim($matches[2]);
+      $val = trim($matches[3]);
     } else {
-      $this->_name = $expression;
+      $name = $exp;
+      $op = null;
+      $val = null;
     }
+
+    $matches = array();
+    if (preg_match('/([[:alnum:]_-]+)\[([[:alnum:]_-]+)\]/', $name, $matches)) {
+      $name = array($matches[1], $matches[2]);
+    }
+
+    $this->_conditions[] = array(
+      'name' => $name,
+      'op'   => $op,
+      'val'  => $val
+    );
   }
 
   /**
@@ -79,22 +150,48 @@ class IfExpression {
    * @param Array $values Set of substitution values.
    * @return boolean
    */
-  public function isSatisfiedBy(Array $values) {
-    if (!isset($values[$this->_name])) {
-      return false;
+  public function isSatisfiedBy(array $values) {
+    foreach ($this->_conditions AS $cond) {
+      $val = $this->_extractValue($cond['name'], $values);
+
+      if ($val === null) {
+        continue;
+      }
+
+      if ($cond['val'] === null) {
+        if ($val === true) {
+          return true;
+        }
+      } else {
+        $fn = self::$_opEvaluators[$cond['op']];
+        if ($fn($val, $cond['val'])) {
+          return true;
+        }
+      }
     }
 
-    if ($this->_value === null) {
-      return $values[$this->_name] === true;
+    return false;
+  }
+
+  private function _extractValue($name, array $values) {
+    $val = null;
+    if (is_array($name)) {
+      if (!isset($values[$name[0]]) ||
+          !is_array($values[$name[0]]) ||
+          !isset($values[$name[0]][$name[1]]))
+      {
+        return null;
+      }
+
+      $val = $values[$name[0]][$name[1]];
+    } else {
+      if (!isset($values[$name])) {
+        return null;
+      }
+
+      $val = $values[$name];
     }
 
-    $val = $values[$this->_name];
-    if ($this->_operator === '=') {
-      return $val == $this->_value;
-
-    } else if ($this->_operator === '>') {
-      return $val > $this->_value;
-
-    }
+    return $val;
   }
 }

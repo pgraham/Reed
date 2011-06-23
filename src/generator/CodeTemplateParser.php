@@ -30,16 +30,7 @@ class CodeTemplateParser {
    */
   public function parse($code) {
     $template = new CodeTemplate();
-
-    // Parse If blocks
-    $ifParser = new IfParser($this);
-    $parsed = $ifParser->parse($code, $template);
-
-    // Parse Each blocks
-    $eachParser = new EachParser($this);
-    $parsed = $eachParser->parse($parsed, $template);
-
-    $template->setCode($parsed);
+    $template->setCode($code);
     return $template;
   }
 }
