@@ -9,3 +9,6 @@
   created and used.  The if block implementation will need to override set code
   to parse out each of the clauses.
 - Update EachBlock evaluation to handle indexed references.
+- Refactor so that variable dererencing is all handled in one spot.
+- Add support for deep indexing
+- Allow text to apprear on the same line, after a block's closing tag.

@@ -52,6 +52,7 @@ class CodeBlockParser {
     $curBlock = null;
     $curClause = null;
     $curCode = Array();
+    $nestedLevel = 0;
     foreach ($lines AS $line) {
       $ifParams = Array();
 
@@ -85,26 +86,48 @@ class CodeBlockParser {
 
       } else if ($curBlock instanceof \reed\generator\IfBlock) {
 
-        if (preg_match(self::ELSEIF_REGEX, $line, $ifParams)) {
-          $curClause->setCode(implode("\n", $curCode));
+        if (preg_match(self::IF_REGEX, $line, $ifParams)) {
+          // There is a nested if, so no clauses for the current block should
+          // be parsed until the nested if is closed
+          $nestedLevel++;
+          $curCode[] = $line;
 
-          $curClause = new ElseIfClause($ifParams[2], $indent);
-          $curBlock->addElseIf($curClause);
-          $curCode = Array();
+        } else if (preg_match(self::ELSEIF_REGEX, $line, $ifParams)) {
+          if ($nestedLevel === 0) {
+            $curClause->setCode(implode("\n", $curCode));
+
+            $curClause = new ElseIfClause($ifParams[2], $indent);
+            $curBlock->addElseIf($curClause);
+            $curCode = Array();
+
+          } else {
+            $curCode[] = $line;
+          }
 
         } else if (preg_match(self::ELSE_REGEX, $line, $ifParams)) {
-          $curClause->setCode(implode("\n", $curCode));
+          if ($nestedLevel === 0) {
+            $curClause->setCode(implode("\n", $curCode));
 
-          $curClause = new ElseClause($indent);
-          $curBlock->setElse($curClause);
-          $curCode = Array();
+            $curClause = new ElseClause($indent);
+            $curBlock->setElse($curClause);
+            $curCode = Array();
+
+          } else {
+            $curCode[] = $line;
+          }
 
         } else if (preg_match(self::FI_REGEX, $line, $ifParams)) {
-          $curClause->setCode(implode("\n", $curCode));
+          if ($nestedLevel === 0) {
+            $curClause->setCode(implode("\n", $curCode));
 
-          $curBlock = null;
-          $curClause = null;
-          $curCode = Array();
+            $curBlock = null;
+            $curClause = null;
+            $curCode = Array();
+
+          } else {
+            $nestedLevel--;
+            $curCode[] = $line;
+          }
 
         } else {
           $curCode[] = $line;
@@ -112,11 +135,23 @@ class CodeBlockParser {
 
       } else if ($curBlock instanceof \reed\generator\EachBlock) {
 
-        if (preg_match(self::DONE_REGEX, $line)) {
-          $curBlock->setCode(implode("\n", $curCode));
+        if (preg_match(self::EACH_REGEX, $line, $ifParams)) {
+          // There is a nested if, so no clauses for the current block should
+          // be parsed until the nested if is closed
+          $nestedLevel++;
+          $curCode[] = $line;
 
-          $curBlock = null;
-          $curCode = Array();
+        } else if (preg_match(self::DONE_REGEX, $line)) {
+          if ($nestedLevel === 0) {
+            $curBlock->setCode(implode("\n", $curCode));
+
+            $curBlock = null;
+            $curCode = Array();
+
+          } else {
+            $nestedLevel--;
+            $curCode[] = $line;
+          }
 
         } else {
           $curCode[] = $line;

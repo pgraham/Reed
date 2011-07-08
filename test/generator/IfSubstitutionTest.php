@@ -65,4 +65,40 @@ class IfSubstitutionTest extends TestCase {
 
     $this->assertEquals($expected, $resolved);
   }
+
+  public function testNestedIfIf() {
+    $templateCode = file_get_contents(__DIR__ . '/nested_if.template');
+    $template = CodeTemplateParser::parse($templateCode);
+
+    $expectedBase = "This is a template with an if statement nested inside of"
+      . " an if statement.\n\n";
+
+    $expected = $expectedBase . "  value1 and value2\n\n";
+    $resolved = $template->forValues(array(
+      'value1' => true,
+      'value2' => true
+    ));
+    $this->assertEquals($expected, $resolved);
+
+    $expected = $expectedBase . "  value1 and not value2\n\n";
+    $resolved = $template->forValues(array(
+      'value1' => true,
+      'value2' => false
+    ));
+    $this->assertEquals($expected, $resolved);
+
+    $expected = $expectedBase . "  not value1 and value2\n\n";
+    $resolved = $template->forValues(array(
+      'value1' => false,
+      'value2' => true
+    ));
+    $this->assertEquals($expected, $resolved);
+
+    $expected = $expectedBase . "  not value1 and not value2\n\n";
+    $resolved = $template->forValues(array(
+      'value1' => false,
+      'value2' => false
+    ));
+    $this->assertEquals($expected, $resolved);
+  }
 }
