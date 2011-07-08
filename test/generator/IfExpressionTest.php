@@ -86,4 +86,21 @@ class IfExpressionTest extends TestCase {
     $this->assertFalse($if->isSatisfiedBy(array('value' => false)));
     $this->assertFalse($if->isSatisfiedBy(array()));
   }
+
+  public function testIsSetOperator() {
+    $if = new IfExpression('value ISSET');
+
+    $this->assertTrue($if->isSatisfiedBy(array(
+      'value' => 'anything'
+    )));
+    $this->assertFalse($if->isSatisfiedBy(array()));
+  }
+
+  public function testIsNotSetOperator() {
+    $if = new IfExpression('value ISNOTSET');
+
+    $this->assertFalse($if->isSatisfiedBy(array(
+      'value' => 'anything')));
+    $this->assertTrue($if->isSatisfiedBy(array()));
+  }
 }

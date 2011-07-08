@@ -34,7 +34,7 @@ class IfExpression {
    * Non-capturing regular expression for all supported operators.  Any
    * strings matched by this regexp must have a matching entry in opEvaluators.
    */
-  private static $_ops = '(?:=|>|>=|<|<=|!=)';
+  private static $_ops = '(?:=|>|>=|<|<=|!=|ISSET|ISNOTSET)';
 
   private static $_opEvaluators;
 
@@ -74,6 +74,14 @@ class IfExpression {
       // '!=' Evaluator
       '!=' => function ($a, $b) {
         return $a !== $b;
+      },
+
+      'ISSET' => function ($a, $b) {
+        return $a !== null;
+      },
+
+      'ISNOTSET' => function ($a, $b) {
+        return $a === null;
       }
     );
   }
@@ -121,7 +129,7 @@ class IfExpression {
     $ops = self::$_ops;
 
     $matches = array();
-    if (preg_match("/\s*(.*)\s*($ops)\s*(.*)\s*/", $exp, $matches)) {
+    if (preg_match("/\s*(.+)\s*($ops)\s*(.*)\s*/", $exp, $matches)) {
       $name = trim($matches[1]);
       $op = trim($matches[2]);
       $val = trim($matches[3]);
@@ -153,10 +161,6 @@ class IfExpression {
   public function isSatisfiedBy(array $values) {
     foreach ($this->_conditions AS $cond) {
       $val = $this->_extractValue($cond['name'], $values);
-
-      if ($val === null) {
-        continue;
-      }
 
       if ($cond['val'] === null) {
         if ($val === true) {
