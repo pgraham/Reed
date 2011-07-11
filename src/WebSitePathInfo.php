@@ -172,7 +172,16 @@ class WebSitePathInfo {
   /**
    * Getter for the web site's web accessible target directory as a web path.
    *
+   * TODO Remove this method, it is really just syntactic sugar for:
+   *
+   *        $pathInfo->fsToWeb($pathInfo->getWebTarget());
+
+   *      It is also the only method that returns a web path rather than a file
+   *      system path and so is inconsistent with the rest of this classes
+   *      interface.
+   *
    * @return string
+   * @deprecated
    */
   public function getWebAccessibleTarget() {
     return $this->_pathConverter->fsToWeb($this->_webTarget);
@@ -195,7 +204,6 @@ class WebSitePathInfo {
       $resolved = $this->_root . '/' . $resolved;
     }
 
-    $pathInfo = new SplFileInfo($resolved);
-    return $pathInfo->getRealPath();
+    return $resolved;
   }
 }
