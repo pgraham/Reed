@@ -57,6 +57,37 @@ class Annotations implements ArrayAccess {
       $reflector->getDocComment());
   }
 
+  /**
+   * Return a boolean indicating whether or not the specified annotation is
+   * set.  Nested values can be specified by providing multiple parameters.
+   *
+   * E.g. $annotations->hasAnnotation('base', 'sub'); is equivalent to checking
+   * if $annotations['base']['sub'] is set.
+   *
+   * Passing in no parameters will return whether or not the collection is
+   * empty.
+   *
+   * @param string...
+   */
+  public function hasAnnotation() {
+    if (func_num_args() == 0) {
+      return count($this->_annotations) > 0;
+    }
+
+    $args = func_get_args();
+    $annos =& $this->_annotations;
+    while (count($args) > 0) {
+      $anno = array_shift($args);
+      if (isset($annos[$anno])) {
+        $annos =& $annos[$anno];
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   /*
    * ===========================================================================
    * ArrayAccess implementation

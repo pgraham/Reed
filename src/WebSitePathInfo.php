@@ -142,6 +142,15 @@ class WebSitePathInfo {
   }
 
   /**
+   * Getter for the web site's source path.
+   *
+   * @return string
+   */
+  public function getSrcPath() {
+    return $this->_src;
+  }
+
+  /**
    * Getter for the web site's non-web accessible target directory.
    *
    * @return string
@@ -170,21 +179,21 @@ class WebSitePathInfo {
   }
 
   /**
-   * Getter for the web site's web accessible target directory as a web path.
+   * Prepends and returns the given path with the web root.
    *
-   * TODO Remove this method, it is really just syntactic sugar for:
-   *
-   *        $pathInfo->fsToWeb($pathInfo->getWebTarget());
-
-   *      It is also the only method that returns a web path rather than a file
-   *      system path and so is inconsistent with the rest of this classes
-   *      interface.
-   *
+   * @param string $path Web path relative to the web root.
    * @return string
-   * @deprecated
    */
-  public function getWebAccessibleTarget() {
-    return $this->_pathConverter->fsToWeb($this->_webTarget);
+  public function webPath($path) {
+    if (substr($path, 0, 1) === '/') {
+      $path = substr($path, 1);
+    }
+
+    if ($this->_webRoot === '/') {
+      return "/$path";
+    }
+
+    return "$this->_webRoot/$path";
   }
 
   /* Resolve the given path relative to the set root path */
