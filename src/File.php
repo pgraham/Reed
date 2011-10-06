@@ -22,7 +22,8 @@ namespace reed;
 class File {
 
   /**
-   * Join a list paths together.
+   * Join a list paths together.  If the first path in the list is absolute
+   * then an absolute path is returned, otherwise a relative path is returned.
    *
    * @param string... Any number of paths to join together.
    * @return string
@@ -33,12 +34,27 @@ class File {
       return '';
     }
 
-    $path = implode('/', array_map(function ($path) {
-      return trim($path, '/');
+    $path = implode(PATH_SEPARATOR, array_map(function ($path) {
+      return trim($path, PATH_SEPARATOR);
     }, $paths));
 
-    return substr($paths[0], 0, 1) === '/'
-      ? "/$path"
+    // If the first path in the list is absolute return an absolute path,
+    // otherwise return a relative path
+    // TODO Make an isAbsolute($path) function that handles window paths
+    // TODO Make a makeAbsolute($path, $drive) function that handles windows
+    //      paths
+    return substr($paths[0], 0, 1) === PATH_SEPARATOR
+      ? PATH_SEPARATOR . $path
       : $path;
+  }
+
+  /**
+   * Remove any trailing slashes from the given string.
+   *
+   * @param string $path
+   * @return string
+   */
+  public static function rtrim($path) {
+    return rtrim($path, PATH_SEPARATOR);
   }
 }
