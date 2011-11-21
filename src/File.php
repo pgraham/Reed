@@ -34,8 +34,8 @@ class File {
       return '';
     }
 
-    $path = implode(PATH_SEPARATOR, array_map(function ($path) {
-      return trim($path, PATH_SEPARATOR);
+    $path = implode(DIRECTORY_SEPARATOR, array_map(function ($path) {
+      return trim($path, DIRECTORY_SEPARATOR);
     }, $paths));
 
     // If the first path in the list is absolute return an absolute path,
@@ -43,8 +43,8 @@ class File {
     // TODO Make an isAbsolute($path) function that handles window paths
     // TODO Make a makeAbsolute($path, $drive) function that handles windows
     //      paths
-    return substr($paths[0], 0, 1) === PATH_SEPARATOR
-      ? PATH_SEPARATOR . $path
+    return substr($paths[0], 0, 1) === DIRECTORY_SEPARATOR
+      ? DIRECTORY_SEPARATOR . $path
       : $path;
   }
 
@@ -55,6 +55,6 @@ class File {
    * @return string
    */
   public static function rtrim($path) {
-    return rtrim($path, PATH_SEPARATOR);
+    return rtrim($path, DIRECTORY_SEPARATOR);
   }
 }
