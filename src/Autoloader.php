@@ -17,7 +17,7 @@ namespace reed;
 /**
  * Autoloader for Reed classes.
  *
- * @author Philip Graham <philip@lightbox.org>
+ * @author Philip Graham <philip@zeptech.ca>
  */
 class Autoloader {
 
