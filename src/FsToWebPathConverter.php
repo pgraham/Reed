@@ -39,11 +39,8 @@ class FsToWebPathConverter {
    *   website.  This is any path needed _AFTER_ the domain.
    */
   public function __construct($documentRoot, $webRoot = '/') {
-    $this->_docRoot = $this->_stripTrailingSeparator($documentRoot);
-
-    if ($webRoot !== '/') {
-      $this->_webRoot = $this->_stripTrailingSeparator($webRoot);
-    }
+    $this->_docRoot = rtrim($documentRoot, '/');
+    $this->_webRoot = rtrim($webRoot, '/');
   }
 
   /**
@@ -60,18 +57,6 @@ class FsToWebPathConverter {
         . "Path: $fsPath");
     }
 
-    $webPath = str_replace($this->_docRoot, '', $fsPath);
-    if ($this->_webRoot !== '/') {
-      $webPath = $this->_webRoot . $webPath;
-    }
-    return $webPath;
-  }
-
-  /* Remove any trailing slashes from the given path. */
-  private function _stripTrailingSeparator($path) {
-    if (substr($path, -1) === '/') {
-      return substr($path, 0, -1);
-    }
-    return $path;
+    return $this->_webRoot . str_replace($this->_docRoot, '', $fsPath);
   }
 }
