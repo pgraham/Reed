@@ -142,6 +142,15 @@ class WebSitePathInfo {
   }
 
   /**
+   * Getter for the web site's root path.
+   *
+   * @return string
+   */
+  public function getRootPath() {
+    return $this->_root;
+  }
+
+  /**
    * Getter for the web site's source path.
    *
    * @return string
