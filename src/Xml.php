@@ -56,7 +56,7 @@ class Xml {
 
       $parent = $parent->item(0);
       foreach ($toAdd AS $nodeName) {
-        $newNode = $dom->createElement($toAdd);
+        $newNode = $dom->createElement($nodeName);
         $parent->appendChild($newNode);
         $parent = $newNode;
       }
@@ -109,7 +109,7 @@ class Xml {
       $match = array();
       if (preg_match(self::PATCH_DEF_RE, $def, $match)) {
         $xpath = '/' . str_replace('.', '/', $match[1]);
-        $sub = $match[1];
+        $sub = $match[2];
         $type = null;
 
         // Special case for boolean, add or remove self closing tag
@@ -120,14 +120,14 @@ class Xml {
         } else {
           $type = 'replace_text';
         }
-      }
 
-      $subs[] = array(
-        'def' => $def,
-        'path' => $path,
-        'type' => $type,
-        'sub' => $sub
-      )
+        $subs[] = array(
+          'def' => $def,
+          'path' => $xpath,
+          'type' => $type,
+          'sub' => $sub
+        );
+      }
     }
     return $subs;
   }
