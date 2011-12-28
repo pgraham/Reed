@@ -14,7 +14,9 @@
  */
 namespace reed;
 
+use \DOMCdataSection;
 use \DOMDocument;
+use \DOMNode;
 use \DOMXPath;
 
 /**
@@ -26,6 +28,7 @@ class Xml {
 
   /** Regular expression for parsing patch definitions. */
   const PATCH_DEF_RE = '/([\w.]+)\s*=\s*(.*)/';
+  const CDATA_RE = '/<\!\[CDATA\[(.+)\]\]>/';
 
   /**
    * Ensures that a node at the given xpath exists in the given document.  If
@@ -182,8 +185,15 @@ class Xml {
         break;
 
         case 'replace_text':
-        foreach ($nodes AS $node) {
-          $node->nodeValue = $sub['sub'];
+        if (preg_match(self::CDATA_RE, $sub['sub'], $matches)) {
+          foreach ($nodes AS $node) {
+            self::removeChildren($node);
+            $node->appendChild(new DOMCdataSection($matches[1]));
+          }
+        } else {
+          foreach ($nodes AS $node) {
+            $node->nodeValue = $sub['sub'];
+          }
         }
         break;
       }
@@ -192,4 +202,14 @@ class Xml {
     return $dom;
   }
 
+  /**
+   * Remove all the children of a given DOMNode element.
+   *
+   * @param DOMNode $node
+   */
+  public static function removeChildren(DOMNode $node) {
+    while (isset($node->firstChild)) {
+      $node->removeChild($node->firstChild);
+    }
+  }
 }

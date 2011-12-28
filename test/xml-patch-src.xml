@@ -2,4 +2,5 @@
 <root>
   <flag/>
   <substitute>original_value</substitute>
+  <substitutecdata><![CDATA[cdatatext<<<>>>]]></substitutecdata>
 </root>

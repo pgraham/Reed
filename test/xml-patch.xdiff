@@ -1,3 +1,4 @@
 root.substitute = new_value
+root.substitutecdata = <![CDATA[newcdatatext<<<>>>]]>
 root.flag = false
 root.newflag = true

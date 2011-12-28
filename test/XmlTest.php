@@ -44,5 +44,14 @@ class XmlTest extends TestCase {
 
     $nodes = $subXPath->query('/root/newflag');
     $this->assertEquals(1, $nodes->length);
+
+    $nodes = $subXPath->query('/root/substitutecdata');
+    $this->assertEquals(1, $nodes->length);
+    $this->assertEquals(1, $nodes->item(0)->childNodes->length);
+    $this->assertEquals(
+      XML_CDATA_SECTION_NODE,
+      $nodes->item(0)->childNodes->item(0)->nodeType
+    );
   }
+
 }
