@@ -65,7 +65,7 @@ class ClassLoader {
    * @param string $className The name of the class to load.
    */
   public function loadClass($className) {
-    if (substr($className, 0, $this->_nsLen) !== $this->_ns) {
+    if (substr($className, 0, $this->_nsLen) != $this->_ns) {
       return;
     }
 
