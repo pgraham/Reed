@@ -43,6 +43,7 @@ class WebSitePathInfo {
   private $_doc;
   private $_lib;
   private $_src;
+  private $_usr;
 
   private $_target;
   private $_webTarget;
@@ -101,7 +102,7 @@ class WebSitePathInfo {
     }
 
     // Resolve relative paths and store
-    $this->_doc = $this->_getPath($docRoot, 'public_html');
+    $this->_doc = $this->_getPath($docRoot, 'htdocs');
     $this->_lib = $this->_getPath($libRoot, 'lib');
     $this->_src = $this->_getPath($srcRoot, 'src');
     $this->_target = $this->_getPath($target, $this->_src . '/gen');
@@ -169,6 +170,16 @@ class WebSitePathInfo {
   }
 
   /**
+   * Getter for the site's user generated content directory.  If the site does
+   * not explicitly support generated content then this method will return null.
+   *
+   * @return string
+   */
+  public function getUserContentDir() {
+    return $this->_usr;
+  }
+
+  /**
    * Getter for the web site's web accessible root.
    *
    * @return string
@@ -185,6 +196,16 @@ class WebSitePathInfo {
    */
   public function getWebTarget() {
     return $this->_webTarget;
+  }
+
+  /**
+   * If the site supports user generated content set the path where it is to be
+   * stored.
+   *
+   * @param string $path Web path relative to the web root.
+   */
+  public function setUserContentDir($path) {
+    $this->_usr = File::joinPaths($this->_doc, $path);
   }
 
   /**
