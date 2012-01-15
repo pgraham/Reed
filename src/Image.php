@@ -53,11 +53,11 @@ class Image {
   }
 
   public function getHeight() {
-    return imagesx($this->_image);
+    return imagesy($this->_image);
   }
 
   public function getWidth() {
-    return imagesy($this->_image);
+    return imagesx($this->_image);
   }
 
   public function resizeToHeight($height) {
@@ -69,7 +69,7 @@ class Image {
   public function resizeToWidth($width) {
     $ratio = $width / $this->getWidth();
     $height = $this->getHeight() * $ratio;
-    $this-resize($width, $height);
+    $this->resize($width, $height);
   }
 
   public function resize($width, $height) {
