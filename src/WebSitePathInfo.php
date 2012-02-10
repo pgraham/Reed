@@ -14,6 +14,7 @@
  */
 namespace reed;
 
+use \SimpleXMLElement;
 use \SplFileInfo;
 
 /**
@@ -37,13 +38,94 @@ use \SplFileInfo;
  */
 class WebSitePathInfo {
 
+  /**
+   * Parse website path info from a given SimpleXMLElement.
+   *
+   * @param SimpleXMLElement $xmlCfg
+   * @param string $pathRoot Root path for any relative paths
+   * @return WebSitePathInfo
+   */
+  public static function parse(SimpleXMLElement $xmlCfg, $pathRoot) {
+    $sourceNs = null;
+    if (isset($xmlCfg->sourcePath)) {
+      $sourceRoot = $xmlCfg->sourcePath->__toString();
+
+      if (substr($sourceRoot, 0, 1) !== '/') {
+        $target = $pathRoot . '/' . $sourceRoot;
+      }
+
+      if (isset($xmlCfg->sourcePath['nsbase'])) {
+        $sourceNs = $xmlCfg->sourcePath['nsbase'];
+      }
+    } else {
+      $sourceRoot = $pathRoot . '/src';
+    }
+
+
+    // Set the output directory, if not specified use a temporary directory
+    if (isset($xmlCfg->targetPath)) {
+      $target = $xmlCfg->targetPath->__toString();
+
+      if (substr($target, 0, 1) != '/') {
+        $target = $pathRoot . '/' . $target;
+      }
+    } else {
+      $target = sys_get_temp_dir() . '/conductor';
+    }
+
+    // Parse the document root
+    if (isset($xmlCfg->documentRoot)) {
+      $docRoot = $xmlCfg->documentRoot->__toString();
+
+      if (substr($docRoot, 0, 1) != '/') {
+        $docRoot = $pathRoot . '/' . $docRoot;
+      }
+    } else {
+      $docRoot = $pathRoot . '/public_html';
+    }
+
+    // Parse the file system path to the web-accessible folder that is writable
+    // by the web server
+    if (isset($xmlCfg->webWritable)) {
+      $webWrite = $xmlCfg->webWritable->__toString();
+
+      if (substr($webWrite, 0, 1) != '/') {
+        $webWrite = $pathRoot . '/' . $webWrite;
+      }
+    } else {
+      $webWrite = $docRoot . '/gen';
+    }
+
+    // Parse the root of the website relative to the domain on which it is
+    // hosted
+    if (isset($xmlCfg->webRoot)) {
+      $webRoot = $xmlCfg->webRoot->__toString();
+    } else {
+      $webRoot = '/';
+    }
+
+    $pathInfo = new WebSitePathInfo($pathRoot, $webRoot, $docRoot, null,
+      $sourceRoot, $target, $webWrite);
+    if ($sourceNs !== null) {
+      $pathInfo->setSrcNs($sourceNs);
+    }
+
+    return $pathInfo;
+  }
+
+  /*
+   * ===========================================================================
+   * Instance
+   * ===========================================================================
+   */
+
   private $_root;
   private $_webRoot;
 
   private $_doc;
   private $_lib;
   private $_src;
-  private $_usr;
+  private $_srcNs;
 
   private $_target;
   private $_webTarget;
@@ -161,22 +243,21 @@ class WebSitePathInfo {
   }
 
   /**
+   * Getter for the namespace of all classes found in the source path.
+   *
+   * @return string
+   */
+  public function getSrcNs() {
+    return $this->_srcNs;
+  }
+
+  /**
    * Getter for the web site's non-web accessible target directory.
    *
    * @return string
    */
   public function getTarget() {
     return $this->_target;
-  }
-
-  /**
-   * Getter for the site's user generated content directory.  If the site does
-   * not explicitly support generated content then this method will return null.
-   *
-   * @return string
-   */
-  public function getUserContentDir() {
-    return $this->_usr;
   }
 
   /**
@@ -199,13 +280,12 @@ class WebSitePathInfo {
   }
 
   /**
-   * If the site supports user generated content set the path where it is to be
-   * stored.
+   * Setter for the namespace of any classes found in the source path.
    *
-   * @param string $path Web path relative to the web root.
+   * @param string $srcNs
    */
-  public function setUserContentDir($path) {
-    $this->_usr = File::joinPaths($this->_doc, $path);
+  public function setSrcNs($srcNs) {
+    $this->_srcNs = $srcNs;
   }
 
   /**
@@ -215,9 +295,7 @@ class WebSitePathInfo {
    * @return string
    */
   public function webPath($path) {
-    if (substr($path, 0, 1) === '/') {
-      $path = substr($path, 1);
-    }
+    $path = ltrim($path, '/');
 
     if ($this->_webRoot === '/') {
       return "/$path";
