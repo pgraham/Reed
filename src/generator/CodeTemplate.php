@@ -22,6 +22,26 @@ namespace reed\generator;
 class CodeTemplate extends CodeBlock {
 
   /**
+   * This method loads the template at the given path, resolves it with the
+   * provided values and saves the resolved template to the given output path.
+   *
+   * @param string $templatePath
+   * @param string $resolvedPath
+   * @param array $values
+   */
+  public static function compile($templatePath, $resolvedPath, array $values) {
+    $templateLoader = CodeTemplateLoader::get(dirname($templatePath));
+    $compiled = $templateLoader->load(basename($templatePath), $values);
+    file_put_contents($resolvedPath, $compiled);
+  }
+
+  /*
+   * ===========================================================================
+   * Instance
+   * ===========================================================================
+   */
+
+  /**
    * Create a new code template for the given text.
    *
    * @param string $template
