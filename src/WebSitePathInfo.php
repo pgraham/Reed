@@ -34,6 +34,7 @@ use \SplFileInfo;
  * accessible path and one non-web accessible path.  Both these paths should be
  * writable by the web server.
  *
+ * @deprecated This class is slated for removal.  Instead specific path components, derived by convention should be injected where needed.  Use a PathConverter directly for that functionality
  * @author Philip Graham <philip@zeptech.ca>
  */
 class WebSitePathInfo {
