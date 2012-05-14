@@ -12,8 +12,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed\test;
-
+namespace reed\test; 
 use \reed\String;
 
 use \PHPUnit_Framework_TestCase as TestCase;
@@ -79,5 +78,15 @@ class StringTest extends TestCase {
       $actual = String::toCamelCase($subject);
       $this->assertEquals($expected, $actual);
     }
+  }
+
+  /**
+   * Tests the format function.
+   */
+  public function testFormat() {
+    $actual = String::format("I have two {0} in my {1}.", 'apples', 'pocket');
+    $expected = "I have two apples in my pocket.";
+
+    $this->assertEquals($expected, $actual);
   }
 }
