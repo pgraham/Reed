@@ -153,4 +153,18 @@ class String {
     return $fmtd;
   }
 
+  /**
+   * Format an array of key-value pairs for use as the query string portion of a
+   * URL.
+   */
+  public static function urlEncode(array $params) {
+    $qs = array();
+    
+    foreach ($params as $key => $value) {
+      $qs[] = urlencode($key) . '=' . urlencode($value);
+    }
+
+    return implode('&', $qs);
+  }
+
 }
