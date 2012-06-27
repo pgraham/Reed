@@ -47,6 +47,25 @@ class String {
   const STRING_TO_LOWER = 8;
 
   /**
+   * Format a string using {#} style replacements.
+   *
+   * @param string $format
+   * @param string...
+   */
+  public static function format($format) {
+    $args = func_get_args();
+    array_shift($args);
+
+    $getArg = function ($matches) use ($args) {
+      $idx = (int) (substr($matches[0], 1, -1));
+      return $args[$idx];
+    };
+
+    $fmtd = preg_replace_callback('/(\{\d+\})/', $getArg, $format);
+    return $fmtd;
+  }
+
+  /**
    * Separate a camel cased string with the given string.  The returned string
    * is lower cased.
    *
@@ -132,25 +151,6 @@ class String {
     }, substr($separated, 1));
 
     return $camelCased;
-  }
-
-  /**
-   * Format a string using {#} style replacements.
-   *
-   * @param string $format
-   * @param string...
-   */
-  public static function format($format) {
-    $args = func_get_args();
-    array_shift($args);
-
-    $getArg = function ($matches) use ($args) {
-      $idx = (int) (substr($matches[0], 1, -1));
-      return $args[$idx];
-    };
-
-    $fmtd = preg_replace_callback('/(\{\d+\})/', $getArg, $format);
-    return $fmtd;
   }
 
   /**
