@@ -22,6 +22,19 @@ namespace reed;
 class File {
 
   /**
+   * Check that the given filename has the specified extension
+   *
+   * @param string $fname The filename to check.
+   * @param string $extension The extension to check for.
+   * @return boolean Whether or not the given filename has the specified
+   *   extension.
+   */
+  public static function checkExtension($fname, $extension) {
+    return substr($fname, -1 * (strlen($extension) + 1)) === ".$extension";
+  }
+
+
+  /**
    * Join a list paths together.  If the first path in the list is absolute
    * then an absolute path is returned, otherwise a relative path is returned.
    *
