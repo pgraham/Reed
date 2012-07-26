@@ -14,6 +14,8 @@
  */
 namespace reed;
 
+use \SplFileInfo;
+
 /**
  * This class provides various file utility functions.
  *
@@ -33,6 +35,23 @@ class File {
     return substr($fname, -1 * (strlen($extension) + 1)) === ".$extension";
   }
 
+  /**
+   * Check if the given file is hidden using the UNIX convention of prefixing
+   * the filename using a '.'.
+   *
+   * @param string $fname SplFileInfo instance or the name or path of the file
+   *   to check
+   * @return boolean Whether or not the file is hidden per UNIX convention.
+   */
+  public static function isHidden($fname) {
+    if ($fname instanceof SplFileInfo) {
+      $fname = $fname->getFilename();
+    } else {
+      $fname = basename($fname);
+    }
+
+    return substr($fname, 0, 1) === '.';
+  }
 
   /**
    * Join a list paths together.  If the first path in the list is absolute
