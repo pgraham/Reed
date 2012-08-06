@@ -34,6 +34,34 @@ class File {
   }
 
   /**
+   * Aquire a directory lock.
+   *
+   * The specified directory must be writable by the current process in order
+   * to aquire the lock.
+   */
+  public static function dirlock($dir) {
+    if (!is_writeable($dir)) {
+      return false;
+    }
+
+    while (!@mkdir("$dir/.reedlock")) {
+      usleep(100000); // Sleep for 100ms
+    }
+
+    return true;
+  }
+
+  /**
+   * Release a directory lock.
+   *
+   * The specified directory must be writable by the current process in order to
+   * release the lock.
+   */
+  public static function dirunlock($dir) {
+    rmdir("$dir/.reedlock");
+  }
+
+  /**
    * Check if the given file is hidden using the UNIX convention of prefixing
    * the filename using a '.'.
    *
