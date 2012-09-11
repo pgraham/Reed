@@ -28,5 +28,5 @@ interface FileLister {
    * @param string $pattern The pattern of the files to list.
    * @return string[]
    */
-  public function list($dir, $pattern);
+  public function matchesInDirectory($dir, $pattern);
 }

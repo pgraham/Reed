@@ -10,7 +10,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace zpt\util\GlobFileLister;
+namespace zpt\util\file;
 
 /**
  * FileLister implementation that uses the built-in `glob` function to list
@@ -20,7 +20,7 @@ namespace zpt\util\GlobFileLister;
  */
 class GlobFileLister implements FileLister {
 
-  public function list($dir, $pattern) {
+  public function matchesInDirectory($dir, $pattern) {
     return glob("$dir/$pattern");
   }
 }
