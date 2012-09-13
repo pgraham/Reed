@@ -10,7 +10,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed;
+namespace zpt\util;
 
 use \DateInterval;
 use \DatePeriod;

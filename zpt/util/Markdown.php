@@ -10,7 +10,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed;
+namespace zpt\util;
 
 if (stream_resolve_include_path('markdown.php') !== false) {
   include_once 'markdown.php';
@@ -34,7 +34,8 @@ class Markdown {
    */
   public static function parse($md) {
     if (!defined('MARKDOWN_VERSION')) {
-      // Markdown is not available so simple return the unparsed string
+      // Markdown is not available so simply return the unparsed string
+      // TODO Log a warning
       return $md;
     }
 

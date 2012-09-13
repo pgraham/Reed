@@ -12,7 +12,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed;
+namespace zpt\util;
 
 /**
  * Class that will conditionally output debug info.

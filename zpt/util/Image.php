@@ -12,8 +12,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed;
-
+namespace zpt\util; 
 /**
  * This class encapsulates an image and allows it to be manipulated.
  *
