@@ -21,6 +21,8 @@ use \SplFileInfo;
  */
 class File {
 
+  const DIRECTORY_LOCK_TIMEOUT = 10; // 10 seconds
+
   /**
    * Check that the given filename has the specified extension
    *
@@ -34,17 +36,37 @@ class File {
   }
 
   /**
-   * Aquire a directory lock.
+   * Aquire a directory lock.  Note that this locking is not enforced by the
+   * filesystem and is cooperative.  This means that code that does not honour
+   * this locking system can still manipulate a locked directory.
    *
    * The specified directory must be writable by the current process in order
    * to aquire the lock.
+   *
+   * @param string $dir The path of the directory to lock
+   * @param boolean $force Forcefully aquire the lock by removing any existing
+   *   lock prior to aquiring
+   * @throws DirectoryLockTimeoutException
    */
-  public static function dirlock($dir) {
+  public static function dirlock($dir, $force = false) {
     if (!is_writeable($dir)) {
       return false;
     }
 
-    while (!@mkdir("$dir/.reedlock")) {
+    $lockDir = "$dir/.reedlock";
+
+    if ($force && file_exists($lockDir)) {
+      rmdir($lockDir);
+    }
+
+    $start = time();
+    while (!@mkdir($lockDir)) {
+      // Check if the wait timeout has been exceeded
+      $waited = time() - $start;
+      if ($waited > self::DIRECTORY_LOCK_TIMEOUT) {
+        throw new DirectoryLockTimeoutException();
+      }
+
       usleep(100000); // Sleep for 100ms
     }
 
