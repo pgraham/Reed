@@ -23,4 +23,8 @@ class GlobFileLister implements FileLister {
   public function matchesInDirectory($dir, $pattern) {
     return glob("$dir/$pattern");
   }
+
+  public function directoryContains($dir, $file) {
+    return file_exists("$dir/$file");
+  }
 }

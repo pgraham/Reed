@@ -29,4 +29,14 @@ interface FileLister {
    * @return string[]
    */
   public function matchesInDirectory($dir, $pattern);
+
+  /**
+   * This function returns a boolean indicating whether or the specified file
+   * exists in the given directory.
+   *
+   * @param string $dir The directory to check.
+   * @param string $file The name of the file
+   * @return boolean
+   */
+  public function directoryContains($dir, $file);
 }
