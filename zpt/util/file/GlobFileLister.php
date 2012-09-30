@@ -21,7 +21,11 @@ namespace zpt\util\file;
 class GlobFileLister implements FileLister {
 
   public function matchesInDirectory($dir, $pattern) {
-    return glob("$dir/$pattern");
+    $files = glob("$dir/$pattern");
+
+    return array_map(function ($file) {
+      return basename($file);
+    }, $files);
   }
 
   public function directoryContains($dir, $file) {
