@@ -13,11 +13,26 @@
 namespace zpt\util;
 
 /**
- * This class provides various string utility functions.
+ * This class provides various string utility functions.  This classes methods
+ * can either to accessed statically or as methods of an instantiation.
+ *
+ * Static access:
+ *
+ *     if (String::endsWith($string, $suffix)) { ... }
+ *
+ * Object access:
+ *
+ *     $stringX = new String($string);
+ *     if ($stringX->endsWith($suffix)) { ... }
+ *
+ * If you include the zpt\util\functions.php file you can also use a hybrid
+ * syntax:
+ *
+ *     if (String($string)->endsWith($suffix)) { ... }
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
-class String {
+class StringUtils {
 
   /**
    * Flag for lower casing the first character of a string converted from or to
@@ -43,6 +58,16 @@ class String {
    * flags except string to first to upper.
    */
   const STRING_TO_LOWER = 8;
+
+  /**
+   * Returns true with the given string ends with the specified suffix.
+   *
+   * @param string $str
+   * @param string $suffix
+   */
+  public static function endsWith($str, $suffix) {
+    return substr($str, strlen($str) - strlen($suffix)) === $suffix;
+  }
 
   /**
    * Format a string using {#} style replacements.
@@ -164,5 +189,4 @@ class String {
 
     return implode('&', $qs);
   }
-
 }
