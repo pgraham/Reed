@@ -16,6 +16,7 @@
  * @package reed/test
  */
 
+require 'SplClassLoader.php';
 
-require_once __DIR__ . '/../src/Autoloader.php';
-require_once __DIR__ . '/Autoloader.php';
+$loader = new SplClassLoader('zpt\util', __DIR__ . '/..');
+$loader->register();
