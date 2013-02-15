@@ -13,22 +13,7 @@
 namespace zpt\util;
 
 /**
- * This class provides various string utility functions.  This classes methods
- * can either to accessed statically or as methods of an instantiation.
- *
- * Static access:
- *
- *     if (String::endsWith($string, $suffix)) { ... }
- *
- * Object access:
- *
- *     $stringX = new String($string);
- *     if ($stringX->endsWith($suffix)) { ... }
- *
- * If you include the zpt\util\functions.php file you can also use a hybrid
- * syntax:
- *
- *     if (String($string)->endsWith($suffix)) { ... }
+ * This class provides various string utility functions.
  *
  * @author Philip Graham <philip@zeptech.ca>
  */
@@ -55,7 +40,7 @@ class StringUtils {
 
   /**
    * Flag for lower casing the entire string.  This will override all other
-   * flags except string to first to upper.
+   * flags except FIRST_TO_UPPER.
    */
   const STRING_TO_LOWER = 8;
 

@@ -39,7 +39,7 @@ class StringTest extends TestCase {
     );
 
     foreach ($tests AS $subject => $expected) {
-      $actual = String::fromCamelCase($subject);
+      $actual = StringUtils::fromCamelCase($subject);
       $this->assertEquals($expected, $actual);
     }
   }
@@ -57,7 +57,7 @@ class StringTest extends TestCase {
     );
 
     foreach ($tests AS $subject => $expected) {
-      $actual = String::fromCamelCase($subject, ' ', String::CAPITALIZE_WORDS);
+      $actual = StringUtils::fromCamelCase($subject, ' ', StringUtils::CAPITALIZE_WORDS);
       $this->assertEquals($expected, $actual);
     }
   }
@@ -75,7 +75,7 @@ class StringTest extends TestCase {
     );
 
     foreach ($tests AS $subject => $expected) {
-      $actual = String::toCamelCase($subject);
+      $actual = StringUtils::toCamelCase($subject);
       $this->assertEquals($expected, $actual);
     }
   }
@@ -84,7 +84,7 @@ class StringTest extends TestCase {
    * Tests the format function.
    */
   public function testFormat() {
-    $actual = String::format("I have two {0} in my {1}.", 'apples', 'pocket');
+    $actual = StringUtils::format("I have two {0} in my {1}.", 'apples', 'pocket');
     $expected = "I have two apples in my pocket.";
 
     $this->assertEquals($expected, $actual);
