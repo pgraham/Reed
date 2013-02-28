@@ -12,9 +12,9 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed\test;
+namespace zpt\util\test;
 
-use \reed\Xml;
+use \zpt\util\Xml;
 use \DOMXPath;
 
 use \PHPUnit_Framework_TestCase as TestCase;

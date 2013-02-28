@@ -1,7 +1,7 @@
 <?php
 /**
  * =============================================================================
- * Copyright (c) 2010, Philip Graham
+ * Copyright (c) 2013, Philip Graham
  * All rights reserved.
  *
  * This file is part of Reed and is licensed by the Copyright holder under the
@@ -12,8 +12,9 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace reed\test; 
-use \reed\String;
+namespace zpt\util\test; 
+use \zpt\util\String;
+use \zpt\util\StringUtils;
 
 use \PHPUnit_Framework_TestCase as TestCase;
 
