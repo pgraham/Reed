@@ -1,0 +1,21 @@
+{
+    "name": "zeptech/util",
+    "type": "library",
+    "description": "Various helpful functionality for PHP",
+    "keywords": [ "utility", "string", "image", "xml", "file", "date" ],
+    "license": "BSD",
+    "authors": [
+	{
+	    "name": "Philip Graham",
+	    "email": "philip@zeptech.ca"
+	}
+    ],
+    "autoload": {
+	"psr-0": {
+	    "zpt\\util": ""
+	}
+    },
+    "require": {
+	"php": ">=5.3.0"
+    }
+}
