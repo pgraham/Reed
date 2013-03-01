@@ -1,26 +1,31 @@
-Reed:
------
+# Reed:
 
 Reed is a collection of useful utility functionality.
 
-Reed requires PHP >= 5.3.0
+Reed requires PHP &gt;= 5.3.0
 
-Tests:
-------
+## Install
 
-Tests are written against phpunit-3.5.7
+ 1. [Install composer](http://getcomposer.org/doc/00-intro.md#globally)
+ 2. Create composer.json or add to existing:
+    {
+        "require": {
+            "zeptech\utility": "1.x"
+        }
+    }
+ 3. Run `$ composer install`
+ 4. Add `require_once 'vendor/autoload.php';` to your common script.
 
-To run change into the test directory and issue command:
-  phpunit AllTests
+## Tests:
 
-Api:
-----
+ 1. [Install composer](http://getcomposer.org/doc/00-intro.md#globally)
+ 2. `$ composer install --dev`
+ 3. `$ vendor/bin/phpunit test/`
 
-To generate API:
-  1. Clone git://github.com/peej/phpdoctor.git
-  2. Make phpdoc.php executable
-  3. Put phpdoc.php in your environment path variable
-  4. From root directory of Reed installation issue command:
-    phpdoc phpdoc.ini
+## Api:
+
+ 1. Install [PHP Doctor](http://peej.github.com/phpdoctor/)
+ 4. From root directory of Reed installation issue command:
+    `$ phpdoc phpdoc.ini`
 
 This will generate a set of API Pages in /reed/api
