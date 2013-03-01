@@ -1,3 +1,7 @@
 api
 commit.txt
 *.un~
+
+# Composer files
+composer.lock
+vendor/
