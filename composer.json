@@ -1,5 +1,5 @@
 {
-    "name": "zeptech/util",
+    "name": "zeptech/utility",
     "type": "library",
     "description": "Various helpful functionality for PHP",
     "keywords": [ "utility", "string", "image", "xml", "file", "date" ],
