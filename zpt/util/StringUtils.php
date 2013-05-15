@@ -134,6 +134,21 @@ class StringUtils {
   }
 
   /**
+   * Joins a string with another string, optionally separated by another string.
+   *
+   * @param string $left
+   * @param string $right
+   * @param string $separator [optional]
+   */
+  public static function join($left, $right, $separator = '') {
+      if (!$right) {
+          return $left;
+      }
+
+      return $left . $separator . $right;
+  }
+
+  /**
    * Convert a string of words separated by the given separator to a camel cased
    * string.
    *

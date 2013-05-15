@@ -94,6 +94,19 @@ class String
     }
 
     /**
+     * Joins this string with a given string, optionally separated by 
+     * a specified string.
+     *
+     * @param string $join
+     * @param string $separator
+     */
+    public function join($join, $separator = '') {
+        $joined = StringUtils::join($this->str, $join, $separator);
+
+        return new String($joined);
+    }
+
+    /**
      * Returns a new String wrapper for the result of passing the encapsulated
      * string through StringUtils::toCamelCase().
      *
