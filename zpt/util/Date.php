@@ -1,5 +1,6 @@
 <?php
 /**
+ * =============================================================================
  * Copyright (c) 2012, Philip Graham
  * All rights reserved.
  *
@@ -9,6 +10,7 @@
  * the link below.
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
+ * =============================================================================
  */
 namespace zpt\util;
 
