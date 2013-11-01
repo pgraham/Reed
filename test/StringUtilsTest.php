@@ -90,4 +90,30 @@ class StringTest extends TestCase {
 
 		$this->assertEquals($expected, $actual);
 	}
+
+	/**
+	 * Test the format function with named parameters.
+	 */
+	public function testFormatNamedParameters() {
+		$actual = StringUtils::format("I have two {what} in my {where}.", [
+			'what' => 'apples',
+			'where' => 'pocket'
+		]);
+		$expected = 'I have two apples in my pocket.';
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * Test the format function with a mix of named and indexed parameters.
+	 */
+	public function testFormatNamedAndIndexedParameters() {
+		$actual = StringUtils::format("I have two {what} in my {where}. {0}", [
+			'what' => 'apples',
+			'where' => 'pocket'
+		], 'OUCH!');
+		$expected = 'I have two apples in my pocket. OUCH!';
+
+		$this->assertEquals($expected, $actual);
+	}
 }

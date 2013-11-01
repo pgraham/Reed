@@ -64,12 +64,23 @@ class StringUtils {
 		$args = func_get_args();
 		array_shift($args);
 
-		$getArg = function ($matches) use ($args) {
+		$named = [];
+		if (is_array($args[0])) {
+			$named = array_shift($args);
+		}
+
+		$getIdxArg = function ($matches) use ($args) {
 			$idx = (int) (substr($matches[0], 1, -1));
 			return $args[$idx];
 		};
 
-		$fmtd = preg_replace_callback('/(\{\d+\})/', $getArg, $format);
+		$getNamedArg = function ($matches) use ($named) {
+			$idx = substr($matches[0], 1, -1);
+			return $named[$idx];
+		};
+
+		$fmtd = preg_replace_callback('/(\{\d+\})/', $getIdxArg, $format);
+		$fmtd = preg_replace_callback('/(\{\w+\})/', $getNamedArg, $fmtd);
 		return $fmtd;
 	}
 
