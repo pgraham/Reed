@@ -17,6 +17,7 @@ namespace zpt\util;
 use \zpt\util\db\MysqlAdapter;
 use \zpt\util\db\PgsqlAdapter;
 use \zpt\util\db\SqlAdminAdapter;
+use \Exception;
 use \PDO;
 
 /**
@@ -49,21 +50,21 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 	public function __construct($options) {
 		$opts = $this->applyDefaultOptions($options);
 
-		$this->driver = $options['driver'];
-		$this->host = $options['host'];
-		$this->username = $options['username'];
-		$this->password = $options['password'];
-		$this->database = $options['database'];
-		$this->dsnOptions = $options['dsnOptions'];
-		$this->options = $options['pdoOptions'];
-		$this->attributes = $options['pdoAttributes'];
+		$this->driver = $opts['driver'];
+		$this->host = $opts['host'];
+		$this->username = $opts['username'];
+		$this->password = $opts['password'];
+		$this->database = $this->extractOpt($opts, 'database');
+		$this->dsnOptions = $this->extractOpt($opts, 'dsnOptions', []);
+		$this->options = $this->extractOpt($opts, 'pdoOptions', []);
+		$this->attributes = $this->extractOpt($opts, 'pdoAttributes', []);
 
 		switch ($this->driver) {
 			case 'mysql':
 			$this->adapter = new MysqlAdapter($this, $options);
 			break;
 
-			case 'pqsql':
+			case 'pgsql':
 			$this->adapter = new PgsqlAdapter($this, $options);
 			break;
 
@@ -82,7 +83,7 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 			$dsn,
 			$this->username,
 			$this->password,
-			$this->pdoOptions
+			$this->options
 		);
 
 		foreach ($this->attributes as $key => $value) {
@@ -132,8 +133,8 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 			'password'      => $this->password,
 			'database'      => $this->database,
 			'dsnOptions'    => $this->dsnOptions,
-			'pdoOptions'    => $this->pdoOptions,
-			'pdoAttributes' => $this->pdoAttributes
+			'pdoOptions'    => $this->options,
+			'pdoAttributes' => $this->attributes
 		], $options);
 	}
 
@@ -141,5 +142,9 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 		$merged = array_merge([], self::$DEFAULT_OPTS, $options);
 
 		return $merged;
+	}
+
+	private function extractOpt(array $opts, $optName, $default = null) {
+		return isset($opts[$optName]) ? $opts[$optName] : $default;
 	}
 }
