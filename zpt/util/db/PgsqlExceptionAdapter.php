@@ -34,9 +34,18 @@ class PgsqlExceptionAdapter implements DatabaseExceptionAdapter
 		$code = $e->getCode();
 		$dbe = new DatabaseException($msg, $code, $e);
 
-		switch ($code) {
+		$sCode = (string) $code;
+		switch ($sCode) {
 			case '42P04':
 			$dbe->databaseAlreadyExists(true);
+			break;
+
+			case '42710':
+			$dbe->userAlreadyExists(true);
+			break;
+
+			case '42P01':
+			$dbe->tableDoesNotExist(true);
 			break;
 		}
 

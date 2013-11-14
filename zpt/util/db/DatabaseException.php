@@ -29,13 +29,15 @@ class DatabaseException extends PDOException
 	private $sqlCode;
 
 	private $databaseAlreadyExists = false;
+	private $userAlreadyExists = false;
+	private $tableDoesNotExist = false;
 
 	public function __construct(
 		$msg = null,
 		$code = null,
 		Exception $previous = null
 	) {
-		// the inherited code property is expected to be an integer but it is 
+		// the inherited code property is expected to be an integer but it is
 		// possible that a string will be passed to the constructor which will
 		// produce warnings if passed to the parent constructor.
 		$this->sqlCode = $code;
@@ -54,6 +56,20 @@ class DatabaseException extends PDOException
 		if ($databaseAlreadyExists === null) {
 			return $this->databaseAlreadyExists;
 		}
-		$this->databaseAlreadyExists = $databaseAlreadyExists;
+		$this->databaseAlreadyExists = (bool) $databaseAlreadyExists;
+	}
+
+	public function tableDoesNotExist($tableDoesNotExist = null) {
+		if ($tableDoesNotExist === null) {
+			return $this->tableDoesNotExist;
+		}
+		$this->tableDoesNotExist = (bool) $tableDoesNotExist;
+	}
+
+	public function userAlreadyExists($userAlreadyExists = null) {
+		if ($userAlreadyExists === null) {
+			return $this->userAlreadyExists;
+		}
+		$this->userAlreadyExists = (bool) $userAlreadyExists;
 	}
 }
