@@ -15,6 +15,7 @@
 namespace zpt\util\db;
 
 use \zpt\util\StringUtils;
+use \PDOException;
 use \PDO;
 
 /**

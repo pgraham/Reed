@@ -14,10 +14,13 @@
  */
 namespace zpt\util;
 
+use \zpt\util\db\DatabaseException;
 use \zpt\util\db\MysqlAdapter;
+use \zpt\util\db\MysqlExceptionAdapter;
 use \zpt\util\db\PgsqlAdapter;
+use \zpt\util\db\PgsqlExceptionAdapter;
 use \zpt\util\db\SqlAdminAdapter;
-use \Exception;
+use \PDOException;
 use \PDO;
 
 /**
@@ -37,6 +40,7 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 	];
 
 	private $adapter;
+	private $exceptionAdapter;
 
 	private $driver;
 	private $host;
@@ -62,10 +66,12 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 		switch ($this->driver) {
 			case 'mysql':
 			$this->adapter = new MysqlAdapter($this, $options);
+			$this->exceptionAdapter = new MysqlExceptionAdapter();
 			break;
 
 			case 'pgsql':
 			$this->adapter = new PgsqlAdapter($this, $options);
+			$this->exceptionAdapter = new PgsqlExceptionAdapter();
 			break;
 
 			default:
@@ -92,19 +98,39 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 	}
 
 	public function createDatabase($name, $charSet) {
-		$this->adapter->createDatabase($name, $charSet);
+		try {
+			$this->adapter->createDatabase($name, $charSet);
+		} catch (PDOException $e) {
+			$dbException = $this->exceptionAdapter->adapt($e);
+			throw $dbException;
+		}
 	}
 
 	public function createUser($username, $passwd, $host = null) {
-		$this->adapter->createUser($username, $passwd, $host);
+		try {
+			$this->adapter->createUser($username, $passwd, $host);
+		} catch (PDOException $e) {
+			$dbException = $this->exceptionAdapter->adapt($e);
+			throw $dbException;
+		}
 	}
 
 	public function dropDatabase($name) {
-		$this->adapter->dropDatabase($name);
+		try {
+			$this->adapter->dropDatabase($name);
+		} catch (PDOException $e) {
+			$dbException = $this->exceptionAdapter->adapt($e);
+			throw $dbException;
+		}
 	}
 
 	public function dropUser($username, $host = null) {
-		$this->adapter->dropUser($username, $host);
+		try {
+			$this->adapter->dropUser($username, $host);
+		} catch (PDOException $e) {
+			$dbException = $this->exceptionAdapter->adapt($e);
+			throw $dbException;
+		}
 	}
 
 	public function grantUserPermissions(
@@ -113,7 +139,11 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 		$permissions,
 		$host = null
 	) {
-		$this->adapter->grantUserPermissions($db, $username, $permissions, $host);
+		try {
+			$this->adapter->grantUserPermissions($db, $username, $permissions, $host);
+		} catch (PDOException $e) {
+			throw $this->exceptionAdapter->adapt($e);
+		}
 	}
 
 	/**
