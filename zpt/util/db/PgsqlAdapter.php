@@ -92,7 +92,7 @@ class PgsqlAdapter implements SqlAdminAdapter {
 	}
 
 	public function grantUserPermissions(
-		$db,
+		$database,
 		$username,
 		$permissions,
 		$host = null
@@ -109,7 +109,7 @@ class PgsqlAdapter implements SqlAdminAdapter {
 			'username' => $username
 		]);
 
-		$conn = $this->pdo->newConnection([ 'database' => $db ]);
+		$conn = $this->pdo->newConnection([ 'database' => $database ]);
 		$conn->exec($stmt);
 	}
 }
