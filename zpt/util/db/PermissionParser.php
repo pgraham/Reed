@@ -14,6 +14,8 @@
  */
 namespace zpt\util\db;
 
+use \zpt\util\DB;
+
 /**
  * This class parses a database permissions bitmask into a comma separated
  * string of permissions.
