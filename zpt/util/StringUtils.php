@@ -115,7 +115,7 @@ class StringUtils {
 		if (!$capitalizeWords) {
 			$stringToLower = true;
 		}
-		
+
 		if ($capitalizeWords) {
 			$separated = strtoupper($camelCased[0]);
 		} else {
@@ -193,7 +193,7 @@ class StringUtils {
 	 */
 	public static function urlEncode(array $params) {
 		$qs = array();
-		
+
 		foreach ($params as $key => $value) {
 			$qs[] = urlencode($key) . '=' . urlencode($value);
 		}
