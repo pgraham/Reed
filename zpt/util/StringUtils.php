@@ -76,7 +76,11 @@ class StringUtils {
 
 		$getNamedArg = function ($matches) use ($named) {
 			$idx = substr($matches[0], 1, -1);
-			return $named[$idx];
+			if (isset($named[$idx])) {
+				return $named[$idx];
+			} else {
+				return $matches[0];
+			}
 		};
 
 		$fmtd = preg_replace_callback('/(\{\d+\})/', $getIdxArg, $format);
