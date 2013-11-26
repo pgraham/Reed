@@ -14,6 +14,8 @@
  */
 namespace zpt\util;
 
+use \PDO;
+
 /**
  * An assortment of database related functionality.
  *

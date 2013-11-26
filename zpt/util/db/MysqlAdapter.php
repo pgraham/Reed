@@ -70,7 +70,7 @@ class MysqlAdapter implements SqlAdminAdapter {
 		$this->pdo->exec($stmt);
 	}
 
-	public function dropUser($username, $host) {
+	public function dropUser($username, $host = null) {
 		if ($host === null) {
 			$host = self::DEFAULT_USER_HOST;
 		}
