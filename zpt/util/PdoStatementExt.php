@@ -209,7 +209,15 @@ class PdoStatementExt extends PDOStatement {
 
 	/** */
 	public function setFetchMode($mode, $modeArg = null, $ctorArgs = []) {
-		return $this->stmt->setFetchMode($mode, $modeArg, $ctorArgs);
+		if ($mode == PDO::FETCH_COLUMN) {
+			return $this->stmt->setFetchMode($mode, $modeArg);
+		} else if ($mode == PDO::FETCH_CLASS) {
+			return $this->stmt->setFetchMode($mode, $modeArg, $ctorArgs);
+		} else if ($mode === PDO::FETCH_INTO) {
+			return $this->stmt->setFetchMode($mode, $modeArg);
+		} else {
+			return $this->stmt->setFetchMode($mode);
+		}
 	}
 
 }
