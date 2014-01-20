@@ -12,7 +12,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace zpt\util\test; 
+namespace zpt\util\test;
 
 use \PHPUnit_Framework_TestCase as TestCase;
 use \zpt\util\primwrap;

@@ -11,8 +11,8 @@
 	}
     ],
     "autoload": {
-	"psr-0": { "zpt\\util": "" },
-	"files": [ "zpt\\util\\primwrap.php" ]
+	"psr-4": { "zpt\\util\\": "src/" },
+	"files": [ "src\\primwrap.php" ]
     },
     "require": {
 	"php": ">=5.4.0"
