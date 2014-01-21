@@ -31,6 +31,9 @@ class PdoStatementExt extends PDOStatement {
 	private $stmt;
 	private $exceptionAdapter;
 
+	private $iterationRow;
+	private $iterationKey;
+
 	/**
 	 * Create a new PDOStatement wrapper that throws DatabaseExceptions instead of
 	 * PDOExceptions.
@@ -218,6 +221,27 @@ class PdoStatementExt extends PDOStatement {
 		} else {
 			return $this->stmt->setFetchMode($mode);
 		}
+	}
+
+	public function current() {
+		return $this->iterationRow;
+	}
+
+	public function key() {
+		return $this->iterationKey++;
+	}
+
+	public function next() {
+		$this->iterationRow = $this->stmt->fetch();
+	}
+
+	public function rewind() {
+		$this->iterationKey = 0;
+		$this->iterationRow = $this->stmt->fetch();
+	}
+
+	public function valid() {
+		return $this->iterationRow !== null;
 	}
 
 }

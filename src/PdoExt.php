@@ -104,7 +104,7 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 
 		try {
 			$stmt = parent::prepare($statement, $driverOpts);
-			return new PdoStatementExt($stmt, $this->exceptionAdapter);
+			return $stmt;
 		} catch (PDOException $e) {
 			throw $this->exceptionAdapter->adapt($e);
 		}
