@@ -4,7 +4,6 @@ namespace zpt\util\test;
 use \PHPUnit_Framework_TestCase as TestCase;
 
 require_once __DIR__ . '/test-common.php';
-require_once __DIR__ . '/../zpt/util/prim-wrap.php';
 
 /**
  * This class tests the primitive wrapper functions.
