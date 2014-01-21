@@ -146,7 +146,7 @@ class PdoStatementExt extends PDOStatement {
 		$cursorOffset = 0
 	) {
 		if ($fetchStyle === null) {
-			$fetchStyle = PDO::ATTR_DEFAULT_FETCH_MODE;
+			$fetchStyle = PDO::FETCH_BOTH;
 		}
 		if ($cursorOrientation === null) {
 			$cursorOrientation = PDO::FETCH_ORI_NEXT;
