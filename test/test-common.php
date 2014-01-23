@@ -1,7 +1,11 @@
 <?php
 /**
  * =============================================================================
+<<<<<<< Updated upstream
  * Copyright (c) 2014, Philip Graham
+=======
+ * Copyright (c) 2013, Philip Graham
+>>>>>>> Stashed changes
  * All rights reserved.
  *
  * This file is part of Reed and is licensed by the Copyright holder under the
@@ -15,4 +19,14 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
-$loader = require_once __DIR__ . '/../vendor/autoload.php';
+// Find composer vendor directory.
+$dir = dirname(__DIR__);
+while (!file_exists($dir . DIRECTORY_SEPARATOR . '/vendor')) {
+	$dir = dirname($dir);
+}
+$composerAutoloaderPath = implode(DIRECTORY_SEPARATOR, [
+	$dir,
+	'vendor',
+	'autoload.php'
+]);
+$loader = require $composerAutoloaderPath;
