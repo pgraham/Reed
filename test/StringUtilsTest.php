@@ -12,7 +12,7 @@
  *
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-namespace zpt\util\test; 
+namespace zpt\util\test;
 use \zpt\util\String;
 use \zpt\util\StringUtils;
 

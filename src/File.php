@@ -12,7 +12,8 @@
  */
 namespace zpt\util;
 
-use \SplFileInfo;
+use DirectoryIterator;
+use SplFileInfo;
 
 /**
  * This class provides various file utility functions.
@@ -71,6 +72,52 @@ class File {
     }
 
     return true;
+  }
+
+  /**
+   * Copy the specified source to the specified destination. If source is
+   * a directory then the copy will be recursive.
+   *
+   * @param string $src
+   * @param string $dest
+   * @return boolean
+   */
+  public static function copy($src, $dest) {
+    if (!file_exists($src)) {
+      return false;
+    }
+
+    $isDir = is_dir($src);
+
+    // Ensure destination directory exists
+    if ($isDir) {
+      $destDir = $dest;
+    } else {
+      $destDir = dirname($dest);
+    }
+    if (!file_exists($destDir)) {
+      mkdir($destDir, 0755, true);
+    }
+
+
+    if ($isDir) {
+      $files = new DirectoryIterator($src);
+      foreach ($files as $file) {
+        if ($file->isDot()) {
+          continue;
+        }
+
+        if ($file->isDir()) {
+          self::copy( $file->getPathname(), "$dest/{$file->getFilename()}");
+        } else {
+          copy($file->getPathname(), "$dest/{$file->getFilename()}");
+        }
+      }
+      return true;
+    } else {
+      return copy($src, $dest);
+    }
+
   }
 
   /**
