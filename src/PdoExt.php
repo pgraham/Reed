@@ -14,14 +14,15 @@
  */
 namespace zpt\util;
 
-use \zpt\util\db\DatabaseException;
-use \zpt\util\db\MysqlAdapter;
-use \zpt\util\db\MysqlExceptionAdapter;
-use \zpt\util\db\PgsqlAdapter;
-use \zpt\util\db\PgsqlExceptionAdapter;
-use \zpt\util\db\SqlAdminAdapter;
-use \PDOException;
-use \PDO;
+use zpt\util\db\DatabaseException;
+use zpt\util\db\MysqlAdapter;
+use zpt\util\db\MysqlExceptionAdapter;
+use zpt\util\db\PgsqlAdapter;
+use zpt\util\db\PgsqlExceptionAdapter;
+use zpt\util\db\SqlAdminAdapter;
+use Exception;
+use PDOException;
+use PDO;
 
 /**
  * Pdo Extension that provides an additional layer of abstraction for
@@ -75,7 +76,7 @@ class PdoExt extends PDO implements SqlAdminAdapter {
 			break;
 
 			default:
-			throw new Exception("Unsupported driver $dbdriver");
+			throw new Exception("Unsupported driver $this->driver");
 		}
 
 		$dsn = Db::buildDsn(
