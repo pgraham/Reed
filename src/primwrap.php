@@ -24,6 +24,9 @@ namespace {
    * Global function to create a string wrapper object.
    */
   function String($str) {
+    if ($str instanceof zpt\util\String) {
+      return $str;
+    }
     return new zpt\util\String($str);
   }
 

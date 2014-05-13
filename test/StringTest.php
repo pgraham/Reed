@@ -12,6 +12,13 @@ require_once __DIR__ . '/test-common.php';
  */
 class PrimitiveWrapperTest extends TestCase {
 
+	public function testStringFromString() {
+		$str1 = String('orig');
+		$str2 = String($str1);
+
+		$this->assertTrue($str1 === $str2);
+	}
+
   public function testString() {
     $this->assertTrue( String('hello')->endsWith('lo') );
   }
