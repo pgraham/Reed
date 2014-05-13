@@ -19,7 +19,7 @@ class PrimitiveWrapperTest extends TestCase {
 		$this->assertTrue($str1 === $str2);
 	}
 
-  public function testString() {
-    $this->assertTrue( String('hello')->endsWith('lo') );
-  }
+	public function testString() {
+	$this->assertTrue( String('hello')->endsWith('lo') );
+	}
 }
