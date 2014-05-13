@@ -4,7 +4,7 @@
  * All rights reserved.
  *
  * This file is part of Reed and is licensed by the Copyright holder under
- * the 3-clause BSD License.  The full text of the license can be found in the
+ * the 3-clause BSD License. The full text of the license can be found in the
  * LICENSE.txt file included in the root directory of this distribution or at
  * the link below.
  *
@@ -22,116 +22,116 @@ namespace zpt\util;
 class String
 {
 
-    private $str;
+	private $str;
 
-    /**
-     * Create a new string wrapper object.
-     *
-     * @param string $str
-     */
-    public function __construct($str)
-    {
-        $this->str = $str;
-    }
+	/**
+	 * Create a new string wrapper object.
+	 *
+	 * @param string $str
+	 */
+	public function __construct($str)
+	{
+		$this->str = $str;
+	}
 
-    /**
-     * toString implementation simply returns the encapsulated string.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->str;
-    }
+	/**
+	 * toString implementation simply returns the encapsulated string.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->str;
+	}
 
-    /**
-     * Return a boolean indicating if the encapsulated string ends with the
-     * given suffix.
-     *
-     * @return boolean
-     */
-    public function endsWith($suffix)
-    {
-        return StringUtils::endsWith($this->str, $suffix);
-    }
+	/**
+	 * Return a boolean indicating if the encapsulated string ends with the
+	 * given suffix.
+	 *
+	 * @return boolean
+	 */
+	public function endsWith($suffix)
+	{
+		return StringUtils::endsWith($this->str, $suffix);
+	}
 
-    /**
-     * Returns a new String object wrapping the result of passing the
-     * encapsulated string through StringUtils::format with the given
-     * parameters.
-     *
-     * @return String
-     */
-    public function format()
-    {
-        $args = func_get_args();
-        array_unshift($args, $this->str);
-        $formatted = call_user_func_array(
-            'zpt\util\StringUtils::format',
-            $args
-        );
-        return new String($formatted);
-    }
+	/**
+	 * Returns a new String object wrapping the result of passing the
+	 * encapsulated string through StringUtils::format with the given
+	 * parameters.
+	 *
+	 * @return String
+	 */
+	public function format()
+	{
+		$args = func_get_args();
+		array_unshift($args, $this->str);
+		$formatted = call_user_func_array(
+			'zpt\util\StringUtils::format',
+			$args
+		);
+		return new String($formatted);
+	}
 
-    /**
-     * Returns a new String wrapper for the result of passing the encapsulated
-     * string through StringUtils::fromCamelCase().
-     *
-     * @param string $separator The character(s) to insert between each of the
-     *        camel cased words. Default: _
-     * @param integer $flags Flags for controlling the output string.  See the
-     *        related constants in the StringUtils class for more information.
-     * @return String
-     */
-    public function fromCamelCase($separator = '_', $flags = null)
-    {
-        $fromCamelCase = StringUtils::fromCamelCase(
-            $this->str,
-            $separator,
-            $flags
-        );
-        return new String($fromCamelCase);
-    }
+	/**
+	 * Returns a new String wrapper for the result of passing the encapsulated
+	 * string through StringUtils::fromCamelCase().
+	 *
+	 * @param string $separator The character(s) to insert between each of the
+	 *   camel cased words. Default: _
+	 * @param integer $flags Flags for controlling the output string.  See the
+	 *   related constants in the StringUtils class for more information.
+	 * @return String
+	 */
+	public function fromCamelCase($separator = '_', $flags = null)
+	{
+		$fromCamelCase = StringUtils::fromCamelCase(
+			$this->str,
+			$separator,
+			$flags
+		);
+		return new String($fromCamelCase);
+	}
 
-    /**
-     * Joins this string with a given string, optionally separated by 
-     * a specified string.
-     *
-     * @param string $join
-     * @param string $separator
-     */
-    public function join($join, $separator = '') {
-        $joined = StringUtils::join($this->str, $join, $separator);
+	/**
+	 * Joins this string with a given string, optionally separated by 
+	 * a specified string.
+	 *
+	 * @param string $join
+	 * @param string $separator
+	 */
+	public function join($join, $separator = '') {
+		$joined = StringUtils::join($this->str, $join, $separator);
 
-        return new String($joined);
-    }
+		return new String($joined);
+	}
 
-    /**
-     * Returns a new String wrapper for the result of passing the encapsulated
-     * string through StringUtils::toCamelCase().
-     *
-     * @param string $separator The character(s) that are separating the words
-     *        in the string. Default: _
-     * @param boolean Sstudly Whether or not to upper case the first character
-     *        of the string. Default: false
-     */
-    public function toCamelCase($separator = '_', $studly = false)
-    {
-        $camelCased = StringUtils::toCamelCase($this->str, $separator, $studly);
-        return new String($camelCased);
-    }
+	/**
+	 * Returns a new String wrapper for the result of passing the encapsulated
+	 * string through StringUtils::toCamelCase().
+	 *
+	 * @param string $separator The character(s) that are separating the words
+	 *   in the string. Default: _
+	 * @param boolean Sstudly Whether or not to upper case the first character
+	 *   of the string. Default: false
+	 */
+	public function toCamelCase($separator = '_', $studly = false)
+	{
+		$camelCased = StringUtils::toCamelCase($this->str, $separator, $studly);
+		return new String($camelCased);
+	}
 
-    /**
-     * Returns a new trimmed String wrapper.
-     *
-     * @param string $charMask
-     * @return String
-     */
-    public function trim($charMask = null) {
-        if ($charMask === null) {
-            return new String(trim($this->str));
-        } else {
-            return new String(trim($this->str, $charMask));
-        }
-    }
+	/**
+	 * Returns a new trimmed String wrapper.
+	 *
+	 * @param string $charMask
+	 * @return String
+	 */
+	public function trim($charMask = null) {
+		if ($charMask === null) {
+			return new String(trim($this->str));
+		} else {
+			return new String(trim($this->str, $charMask));
+		}
+	}
 }
