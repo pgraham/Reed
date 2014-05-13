@@ -120,4 +120,18 @@ class String
         $camelCased = StringUtils::toCamelCase($this->str, $separator, $studly);
         return new String($camelCased);
     }
+
+    /**
+     * Returns a new trimmed String wrapper.
+     *
+     * @param string $charMask
+     * @return String
+     */
+    public function trim($charMask = null) {
+        if ($charMask === null) {
+            return new String(trim($this->str));
+        } else {
+            return new String(trim($this->str, $charMask));
+        }
+    }
 }

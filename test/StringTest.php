@@ -20,6 +20,17 @@ class PrimitiveWrapperTest extends TestCase {
 	}
 
 	public function testString() {
-	$this->assertTrue( String('hello')->endsWith('lo') );
+		$this->assertTrue( String('hello')->endsWith('lo') );
+	}
+
+	public function testTrim() {
+		$str = String('  yo  ')->trim();
+		$this->assertEquals('yo', $str);
+
+		$str = String('!!yo!!')->trim('!');
+		$this->assertEquals('yo', $str);
+
+		$str = String('! yo !')->trim('!');
+		$this->assertEquals(' yo ', $str);
 	}
 }
