@@ -58,6 +58,11 @@ class FileTest extends TestCase {
 	}
 
 	public function testCopyDirEmpty() {
+		$src = __DIR__ . '/files/src/empty';
+		if (!file_exists($src)) {
+			mkdir($src);
+		}
+
 		$this->assertTrue(File::copy(
 			__DIR__ . '/files/src/empty',
 			__DIR__ . '/files/dest'
