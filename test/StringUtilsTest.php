@@ -116,4 +116,14 @@ class StringTest extends TestCase {
 
 		$this->assertEquals($expected, $actual);
 	}
+
+	/**
+	 * Test the startsWith function.
+	 */
+	public function testStartsWith() {
+		$this->assertTrue(StringUtils::startsWith("abcdefg", ""));
+		$this->assertTrue(StringUtils::startsWith("abcdefg", "abc"));
+		$this->assertFalse(StringUtils::startsWith("abcdefg", "xyz"));
+		$this->assertFalse(StringUtils::startsWith("abcdefg", "efg"));
+	}
 }

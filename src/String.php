@@ -108,6 +108,16 @@ class String
 	}
 
 	/**
+	 * Return a boolean indicating if the encapsulated string starts with the
+	 * given prefix.
+	 *
+	 * @return boolean
+	 */
+	public function startsWith($prefix) {
+		return StringUtils::startsWith($this->str, $prefix);
+	}
+
+	/**
 	 * Returns a new String wrapper for the result of passing the encapsulated
 	 * string through StringUtils::toCamelCase().
 	 *

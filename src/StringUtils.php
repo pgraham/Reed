@@ -164,6 +164,16 @@ class StringUtils {
 	}
 
 	/**
+	 * Returns true with the given string ends with the specified suffix.
+	 *
+	 * @param string $str
+	 * @param string $prefix
+	 */
+	public static function startsWith($str, $prefix) {
+		return $prefix === '' || strpos($str, $prefix) === 0;
+	}
+
+	/**
 	 * Convert a string of words separated by the given separator to a camel cased
 	 * string.
 	 *
