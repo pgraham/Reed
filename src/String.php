@@ -77,10 +77,12 @@ class String
 	 * Returns a new String wrapper for the result of passing the encapsulated
 	 * string through StringUtils::fromCamelCase().
 	 *
-	 * @param string $separator The character(s) to insert between each of the
-	 *   camel cased words. Default: _
-	 * @param integer $flags Flags for controlling the output string.  See the
-	 *   related constants in the StringUtils class for more information.
+	 * @param string $separator
+	 *   The character(s) to insert between each of the camel cased words.
+	 *   Default: _
+	 * @param integer $flags
+	 *   Flags for controlling the output string.  See the related constants in
+	 *   the StringUtils class for more information.
 	 * @return String
 	 */
 	public function fromCamelCase($separator = '_', $flags = null)
@@ -102,7 +104,6 @@ class String
 	 */
 	public function join($join, $separator = '') {
 		$joined = StringUtils::join($this->str, $join, $separator);
-
 		return new String($joined);
 	}
 
@@ -110,10 +111,12 @@ class String
 	 * Returns a new String wrapper for the result of passing the encapsulated
 	 * string through StringUtils::toCamelCase().
 	 *
-	 * @param string $separator The character(s) that are separating the words
-	 *   in the string. Default: _
-	 * @param boolean Sstudly Whether or not to upper case the first character
-	 *   of the string. Default: false
+	 * @param string $separator
+	 *   The character(s) that are separating the words in the string.
+	 *   Default: _
+	 * @param boolean $studly
+	 *   Whether or not to upper case the first character of the string.
+	 *   Default: false
 	 */
 	public function toCamelCase($separator = '_', $studly = false)
 	{
