@@ -33,4 +33,9 @@ class PrimitiveWrapperTest extends TestCase {
 		$str = String('! yo !')->trim('!');
 		$this->assertEquals(' yo ', $str);
 	}
+
+	public function testStripStart() {
+		$str = String('HTTP/1.1')->stripStart('HTTP/');
+		$this->assertEquals('1.1', $str);
+	}
 }

@@ -118,6 +118,17 @@ class String
 	}
 
 	/**
+	 * Strips the specified prefix from the string. If the string does not start 
+	 * with the prefix then the same String is returned.
+	 *
+	 * @param string $prefix
+	 */
+	public function stripStart($prefix) {
+		$stripped = StringUtils::stripStart($this->str, $prefix);
+		return new String($stripped);
+	}
+
+	/**
 	 * Returns a new String wrapper for the result of passing the encapsulated
 	 * string through StringUtils::toCamelCase().
 	 *

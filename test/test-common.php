@@ -1,7 +1,6 @@
 <?php
 /**
  * Copyright (c) 2014, Philip Graham
- * Copyright (c) 2013, Philip Graham
  * All rights reserved.
  *
  * This file is part of Reed and is licensed by the Copyright holder under the

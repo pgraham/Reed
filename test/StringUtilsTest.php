@@ -126,4 +126,10 @@ class StringTest extends TestCase {
 		$this->assertFalse(StringUtils::startsWith("abcdefg", "xyz"));
 		$this->assertFalse(StringUtils::startsWith("abcdefg", "efg"));
 	}
+
+	public function testStripStart() {
+		$this->assertEquals('1.1', StringUtils::stripStart('HTTP/1.1', 'HTTP/'));
+		$this->assertEquals('HTTP/1.1', StringUtils::stripStart('HTTP/1.1', ''));
+		$this->assertEquals('HTTP/1.1', StringUtils::stripStart('HTTP/1.1', 'TTP'));
+	}
 }

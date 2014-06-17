@@ -164,6 +164,22 @@ class StringUtils {
 	}
 
 	/**
+	 * Strips the specified prefix from the given string and returns the new 
+	 * string. If the given string does not start with the prefix or the prefix is 
+	 * the empty string, then the original string is returned.
+	 *
+	 * @param string $str
+	 * @param string $prefix
+	 */
+	public static function stripStart($str, $prefix) {
+		$prefixLen = strlen($prefix);
+		if (substr($str, 0, $prefixLen) === $prefix) {
+			return substr($str, $prefixLen);
+		}
+		return $str;
+	}
+
+	/**
 	 * Returns true with the given string ends with the specified suffix.
 	 *
 	 * @param string $str
