@@ -101,10 +101,26 @@ class String
 	 *
 	 * @param string $join
 	 * @param string $separator
+	 * @return String
 	 */
 	public function join($join, $separator = '') {
 		$joined = StringUtils::join($this->str, $join, $separator);
 		return new String($joined);
+	}
+
+	/**
+	 * Strip whitespace or other characters from the beginning of the string.
+	 *
+	 * @param string $characterMask
+	 *   List of characters to be removed
+	 * @return String
+	 */
+	public function ltrim($characterMask = null) {
+		if ($characterMask) {
+			return new String(ltrim($this->str, $characterMask));
+		} else {
+			return new String(ltrim($this->str));
+		}
 	}
 
 	/**
