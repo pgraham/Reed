@@ -96,6 +96,15 @@ class String
 	}
 
 	/**
+	 * Whether or not the represented string is the empty string.
+	 *
+	 * @return boolean.
+	 */
+	public function isEmpty() {
+		return $this->str === '';
+	}
+
+	/**
 	 * Joins this string with a given string, optionally separated by 
 	 * a specified string.
 	 *
