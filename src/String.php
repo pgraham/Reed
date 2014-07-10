@@ -153,6 +153,27 @@ class String
 	}
 
 	/**
+	 * Add the specified prefix to the string.
+	 *
+	 * @param string $prefix
+	 * @param boolean $multiline
+	 *   If true and the string contains line breaks, each line of the string will
+	 *   be prefixed.
+	 * @param string $eol
+	 *   If multiline is true, the character(s) to use to delimit new lines.
+	 *   Defaults to PHP_EOL.
+	 */
+	public function prefix($prefix, $multiline = false, $eol = PHP_EOL) {
+		if (!$multiline) {
+			return String($prefix . $this->str);
+		}
+
+		return $this->eachLine(function ($line) use ($prefix) {
+			return $prefix . $line;
+		}, $eol);
+	}
+
+	/**
 	 * Return a boolean indicating if the encapsulated string starts with the
 	 * given prefix.
 	 *

@@ -48,4 +48,12 @@ class PrimitiveWrapperTest extends TestCase {
 		$expected = implode(PHP_EOL, [" line1",  " line2", " line3"]);
 		$this->assertEquals($expected, $processed);
 	}
+
+	public function testMultilinePrefix() {
+		$str = String(implode(PHP_EOL, [ 'line1', 'line2', 'line3' ]));
+		$prefixed = $str->prefix(' ', $multiline = true);
+
+		$expected = implode(PHP_EOL, [" line1",  " line2", " line3"]);
+		$this->assertEquals($expected, $prefixed);
+	}
 }
