@@ -1,23 +1,23 @@
 {
-    "name": "zeptech/utility",
-    "type": "library",
-    "description": "Various helpful functionality for PHP",
-    "keywords": [ "utility", "string", "image", "xml", "file", "date" ],
-    "license": "BSD",
-    "authors": [
+	"name": "zeptech/utility",
+	"type": "library",
+	"description": "Various helpful functionality for PHP",
+	"keywords": [ "utility", "string", "image", "xml", "file", "date" ],
+	"license": "BSD",
+	"authors": [
 	{
-	    "name": "Philip Graham",
-	    "email": "philip@zeptech.ca"
+		"name": "Philip Graham",
+		"email": "philip@zeptech.ca"
 	}
-    ],
-    "autoload": {
-	"psr-4": { "zpt\\util\\": "src/" },
-	"files": [ "src\\primwrap.php" ]
-    },
-    "require": {
-	"php": ">=5.4.0"
-    },
-    "require-dev": {
-	"phpunit/phpunit": "4.1.*"
-    }
+	],
+	"autoload": {
+		"psr-4": { "zpt\\util\\": "src/" },
+		"files": [ "src\\primwrap.php" ]
+	},
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*"
+	}
 }
