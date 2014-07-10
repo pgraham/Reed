@@ -38,4 +38,14 @@ class PrimitiveWrapperTest extends TestCase {
 		$str = String('HTTP/1.1')->stripStart('HTTP/');
 		$this->assertEquals('1.1', $str);
 	}
+
+	public function testEachLine() {
+		$str = String(implode(PHP_EOL, [ 'line1', 'line2', 'line3' ]));
+		$processed = $str->eachLine(function ($line) {
+			return " $line";
+		});
+
+		$expected = implode(PHP_EOL, [" line1",  " line2", " line3"]);
+		$this->assertEquals($expected, $processed);
+	}
 }

@@ -45,6 +45,26 @@ class String
 	}
 
 	/**
+	 * Process each line in a multiline string using the given function and
+	 * concatenate the results.
+	 *
+	 * @param callable $fn
+	 * @param string $eol
+	 *   Specify the character to use as the line end. Defaults to PHP_EOL
+	 */
+	public function eachLine($fn, $eol = PHP_EOL) {
+		$fp = fopen('php://memory', 'r+');
+		fputs($fp, $this->str);
+		rewind($fp);
+
+		$processed = [];
+		while($line = rtrim(fgets($fp), PHP_EOL)) {
+			$processed[] = $fn($line);
+		}
+		return String(implode(PHP_EOL, $processed));
+	}
+
+	/**
 	 * Return a boolean indicating if the encapsulated string ends with the
 	 * given suffix.
 	 *
