@@ -58,9 +58,10 @@ class String
 		rewind($fp);
 
 		$processed = [];
-		while($line = rtrim(fgets($fp), PHP_EOL)) {
-			$processed[] = $fn($line);
+		while($line = fgets($fp)) {
+			$processed[] = $fn(rtrim($line, PHP_EOL));
 		}
+		fclose($fp);
 		return String(implode(PHP_EOL, $processed));
 	}
 

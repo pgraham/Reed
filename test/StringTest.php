@@ -42,11 +42,19 @@ class PrimitiveWrapperTest extends TestCase {
 	public function testEachLine() {
 		$str = String(implode(PHP_EOL, [ 'line1', 'line2', 'line3' ]));
 		$processed = $str->eachLine(function ($line) {
-			return " $line";
+			return $line;
 		});
 
-		$expected = implode(PHP_EOL, [" line1",  " line2", " line3"]);
-		$this->assertEquals($expected, $processed);
+		$this->assertEquals($str, $processed);
+	}
+
+	public function testEachLineBlankLine() {
+		$str = String(implode(PHP_EOL, [ 'line1', '', 'line2' ]));
+		$processed = $str->eachLine(function ($line) {
+			return $line;
+		});
+
+		$this->assertEquals($str, $processed);
 	}
 
 	public function testMultilinePrefix() {
