@@ -105,7 +105,7 @@ class String
 	}
 
 	/**
-	 * Joins this string with a given string, optionally separated by 
+	 * Joins this string with a given string, optionally separated by
 	 * a specified string.
 	 *
 	 * @param string $join
@@ -143,7 +143,7 @@ class String
 	}
 
 	/**
-	 * Strips the specified prefix from the string. If the string does not start 
+	 * Strips the specified prefix from the string. If the string does not start
 	 * with the prefix then the same String is returned.
 	 *
 	 * @param string $prefix
