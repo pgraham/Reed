@@ -24,6 +24,7 @@ class Cmdln
 	private $cmd;
 	private $opts = [];
 	private $args = [];
+	private $argc = 1;
 
 	/**
 	 * Parse the given command line options. The given array is expected to be in
@@ -34,14 +35,11 @@ class Cmdln
 	 * array, but be warned that if a value is provided it is not validated.
 	 *
 	 * @param array $argv
-	 * @param int   $argc
 	 */
-	public function __construct(array $argv, $argc = null) {
-		if ($argc === null) {
-			$argc = count($argv);
-		}
+	public function __construct(array $argv) {
 
 		$this->cmd = array_shift($argv);
+		$this->args[] = $this->cmd;
 
 		foreach ($argv as $arg) {
 			if (preg_match(self::LONG_OPT_RE, $arg, $matches)) {
@@ -57,6 +55,35 @@ class Cmdln
 				$this->args[] = $arg;
 			}
 		}
+
+		$this->argc = count($this->args);
+	}
+
+	/**
+	 * Get the non-option argument at the given index. The argument at element
+	 * 0 is always the command that was executed. The first argument will be found
+	 * at index 1.
+	 *
+	 * @param integer $idx
+	 * @return string
+	 */
+	public function arg($idx) {
+		if (isset($this->args[$idx])) {
+			return $this->args[$idx];
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Return the number of non-option arguments passed to the command. The
+	 * command itself is always counted so the value returned will never be less
+	 * than one.
+	 *
+	 * @return integer
+	 */
+	public function argc() {
+		return $this->argc;
 	}
 
 	public function hasOption($opt) {
