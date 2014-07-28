@@ -154,6 +154,25 @@ class String
 	}
 
 	/**
+	 * Joins the string with the given string (or strings) using the
+	 * DIRECTORY_SEPARATOR.
+	 *
+	 * @param string|array $join
+	 */
+	public function pathJoin($join) {
+		if (is_string($join)) {
+			$join = [ $join ];
+		}
+
+		$path = $this->str;
+		foreach ($join as $cmp) {
+			$path .= DIRECTORY_SEPARATOR . $cmp;
+		}
+
+		return new String($path);
+	}
+
+	/**
 	 * Add the specified prefix to the string.
 	 *
 	 * @param string $prefix
