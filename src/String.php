@@ -194,6 +194,21 @@ class String
 	}
 
 	/**
+	 * Strip whitespace or other characters from the end of the string.
+	 *
+	 * @param string $characterMask
+	 *   List of characters to be removed
+	 * @return String
+	 */
+	public function rtrim($characterMask = null) {
+		if ($characterMask) {
+			return new String(rtrim($this->str, $characterMask));
+		} else {
+			return new String(rtrim($this->str));
+		}
+	}
+
+	/**
 	 * Return a boolean indicating if the encapsulated string starts with the
 	 * given prefix.
 	 *
